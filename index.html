@@ -2,194 +2,340 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>AI 智能助手 - 人性化 v3.0</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<title>小小管家 - AI 生活协作者 v4.0</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#f0f2f5;height:100vh;display:flex;flex-direction:column}.header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:16px;text-align:center;box-shadow:0 2px 12px rgba(0,0,0,0.15)}.header h1{font-size:20px;margin-bottom:4px}#assistantName{font-size:14px;opacity:0.9;cursor:pointer}.chat{flex:1;overflow-y:auto;padding:16px}.message{margin-bottom:16px;display:flex;align-items:flex-end;animation:slideIn .3s ease}@keyframes slideIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}.message.user{justify-content:flex-end}.avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,0.15)}.ai-avatar{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);margin-right:8px}.user-avatar{background:linear-gradient(135deg,#11998e 0%,#38ef7d 100%);margin-left:8px}.bubble{max-width:75%;padding:14px 18px;border-radius:20px;font-size:15px;line-height:1.6;word-wrap:break-word;box-shadow:0 2px 8px rgba(0,0,0,0.08)}.ai-bubble{background:white;color:#333;border-bottom-left-radius:4px}.user-bubble{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;border-bottom-right-radius:4px}.input-area{padding:12px;background:white;border-top:1px solid #e0e0e0;display:flex;gap:8px;align-items:center}.input-area input{flex:1;padding:14px 20px;border:2px solid #e0e0e0;border-radius:28px;font-size:15px;outline:none;transition:all .3s}.input-area input:focus{border-color:#667eea;box-shadow:0 0 0 3px rgba(102,126,234,0.1)}.input-area button{padding:14px 20px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;border:none;border-radius:28px;font-size:15px;cursor:pointer;transition:all .3s;display:flex;align-items:center;gap:6px}.input-area button:hover{transform:scale(1.05)}.input-area button:disabled{opacity:0.5;cursor:not-allowed}.voice-btn{background:linear-gradient(135deg,#f093fb 0%,#f5576c 100%)!important}.voice-btn.listening{animation:pulse 1s infinite}@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}.loading{text-align:center;padding:12px;color:#999;font-size:14px;display:none}.nav{display:flex;background:white;border-top:1px solid #e0e0e0;padding:8px 0;safe-area-inset-bottom:env(safe-area-inset-bottom)}.nav-item{flex:1;text-align:center;padding:10px 8px;color:#999;font-size:11px;cursor:pointer;transition:all .3s;display:flex;flex-direction:column;align-items:center;gap:4px}.nav-item.active{color:#667eea;font-weight:600}.nav-item .icon{font-size:22px}.settings{padding:16px;display:none;background:#f0f2f5;flex:1;overflow-y:auto}.settings.active{display:block}.settings-item{background:white;padding:16px;margin-bottom:12px;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.08)}.settings-item h3{margin-bottom:12px;font-size:16px;color:#333;display:flex;align-items:center;gap:8px}.settings-item p{color:#666;font-size:14px;margin-bottom:12px;line-height:1.6}.toggle{position:relative;width:50px;height:26px}.toggle input{opacity:0;width:0;height:0}.toggle-slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background-color:#ccc;transition:.3s;border-radius:26px}.toggle-slider:before{position:absolute;content:"";height:20px;width:20px;left:3px;bottom:3px;background-color:white;transition:.3s;border-radius:50%}input:checked+.toggle-slider{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%)}input:checked+.toggle-slider:before{transform:translateX(24px)}.permission-item{display:flex;justify-content:space-between;align-items:center;padding:12px;background:#f8f9fa;border-radius:8px;margin-bottom:8px}.permission-item.granted{background:#d4edda}.permission-item .name{display:flex;align-items:center;gap:8px}.permission-item .status{font-size:12px;padding:4px 12px;border-radius:12px;background:#e0e0e0;color:#666}.permission-item.granted .status{background:#28a745;color:white}.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:12px}.stat-card{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;padding:16px;border-radius:12px;text-align:center}.stat-value{font-size:28px;font-weight:bold;margin-bottom:4px}.stat-label{font-size:12px;opacity:0.9}.emoji-picker{position:absolute;bottom:80px;left:16px;background:white;border-radius:12px;box-shadow:0 4px 24px rgba(0,0,0,0.15);padding:12px;display:none;grid-template-columns:repeat(8,1fr);gap:8px;z-index:100}.emoji-picker.show{display:grid}.emoji-btn{font-size:24px;cursor:pointer;padding:4px;border:none;background:transparent;border-radius:4px;transition:all .2s}.emoji-btn:hover{transform:scale(1.2);background:#f0f2f5}
+:root{--bg:#0a0a0f;--card:#1a1a2e;--neon:#00f5ff;--neon2:#ff00ff;--text:#e0e0e0;--text2:#888;--success:#00ff88;--warning:#ffaa00;--danger:#ff4466}
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--text);height:100vh;display:flex;flex-direction:column;overflow:hidden}
+.header{background:linear-gradient(180deg,var(--card) 0%,transparent 100%);padding:16px;text-align:center;border-bottom:1px solid rgba(0,245,255,0.1)}
+.header h1{font-size:20px;background:linear-gradient(90deg,var(--neon),var(--neon2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700}
+#assistantName{font-size:13px;color:var(--text2);margin-top:4px;cursor:pointer}
+.main{flex:1;display:flex;overflow:hidden}
+.sidebar{width:280px;background:var(--card);border-right:1px solid rgba(0,245,255,0.1);display:flex;flex-direction:column}
+.sidebar-header{padding:16px;border-bottom:1px solid rgba(0,245,255,0.1)}
+.sidebar-header h2{font-size:16px;color:var(--neon)}
+.nav-menu{flex:1;overflow-y:auto;padding:8px}
+.nav-item{padding:12px 16px;margin:4px 0;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all .3s;color:var(--text2)}
+.nav-item:hover{background:rgba(0,245,255,0.1);color:var(--text)}
+.nav-item.active{background:linear-gradient(90deg,rgba(0,245,255,0.2),transparent);color:var(--neon);border-left:3px solid var(--neon)}
+.nav-item .icon{font-size:20px}
+.content{flex:1;overflow-y:auto;padding:20px;position:relative}
+.panel{display:none;animation:fadeIn .3s ease}
+.panel.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.card{background:var(--card);border-radius:12px;padding:16px;margin-bottom:16px;border:1px solid rgba(0,245,255,0.1);box-shadow:0 4px 20px rgba(0,0,0,0.3)}
+.card h3{font-size:15px;color:var(--neon);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.quick-actions{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.action-btn{padding:20px;background:linear-gradient(135deg,rgba(0,245,255,0.1),rgba(255,0,255,0.1));border:1px solid rgba(0,245,255,0.2);border-radius:12px;cursor:pointer;transition:all .3s;text-align:center}
+.action-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,245,255,0.2)}
+.action-btn .icon{font-size:32px;margin-bottom:8px}
+.action-btn .label{font-size:13px;color:var(--text2)}
+.input-area{padding:16px;background:var(--card);border-top:1px solid rgba(0,245,255,0.1);display:flex;gap:8px;align-items:center}
+.input-area input{flex:1;padding:14px 20px;background:rgba(0,0,0,0.3);border:1px solid rgba(0,245,255,0.2);border-radius:28px;color:var(--text);font-size:15px;outline:none}
+.input-area input:focus{border-color:var(--neon)}
+.input-area button{padding:14px 20px;background:linear-gradient(135deg,var(--neon),var(--neon2));border:none;border-radius:28px;color:white;cursor:pointer;font-size:15px;transition:all .3s}
+.input-area button:hover{transform:scale(1.05)}
+.voice-btn{background:linear-gradient(135deg,#ff6b6b,#feca57)!important}
+.voice-btn.listening{animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+.reminder-item{display:flex;justify-content:space-between;align-items:center;padding:14px;background:rgba(0,0,0,0.2);border-radius:8px;margin-bottom:8px;border-left:3px solid var(--neon)}
+.reminder-item.urgent{border-left-color:var(--danger)}
+.reminder-item.completed{opacity:0.5;border-left-color:var(--success)}
+.reminder-item .info{flex:1}
+.reminder-item .title{font-size:14px;margin-bottom:4px}
+.reminder-item .time{font-size:12px;color:var(--text2)}
+.reminder-item .actions{display:flex;gap:8px}
+.btn-sm{padding:6px 12px;border:none;border-radius:6px;cursor:pointer;font-size:12px;transition:all .2s}
+.btn-sm.complete{background:var(--success);color:#000}
+.btn-sm.delete{background:var(--danger);color:white}
+.habit-item{display:flex;align-items:center;gap:12px;padding:14px;background:rgba(0,0,0,0.2);border-radius:8px;margin-bottom:8px}
+.habit-item .checkbox{width:24px;height:24px;border:2px solid var(--neon);border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s}
+.habit-item .checkbox.checked{background:var(--neon)}
+.habit-item .checkbox.checked::after{content:'✓';color:#000;font-weight:bold}
+.habit-item .info{flex:1}
+.habit-item .name{font-size:14px;margin-bottom:4px}
+.habit-item .streak{font-size:12px;color:var(--text2)}
+.knowledge-card{padding:14px;background:rgba(0,0,0,0.2);border-radius:8px;margin-bottom:8px;border-left:3px solid var(--neon2)}
+.knowledge-card .title{font-size:14px;margin-bottom:6px}
+.knowledge-card .tags{display:flex;gap:6px;flex-wrap:wrap}
+.tag{padding:3px 10px;background:rgba(0,245,255,0.1);border-radius:12px;font-size:11px;color:var(--neon)}
+.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.stat-card{background:linear-gradient(135deg,rgba(0,245,255,0.1),rgba(255,0,255,0.1));padding:20px;border-radius:12px;text-align:center;border:1px solid rgba(0,245,255,0.2)}
+.stat-value{font-size:32px;font-weight:bold;background:linear-gradient(90deg,var(--neon),var(--neon2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px}
+.stat-label{font-size:12px;color:var(--text2)}
+.permission-item{display:flex;justify-content:space-between;align-items:center;padding:12px;background:rgba(0,0,0,0.2);border-radius:8px;margin-bottom:8px}
+.permission-item.granted{background:rgba(0,255,136,0.1)}
+.toggle{position:relative;width:44px;height:24px}
+.toggle input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#333;transition:.3s;border-radius:24px}
+.toggle-slider:before{position:absolute;content:"";height:18px;width:18px;left:3px;bottom:3px;background:#fff;transition:.3s;border-radius:50%}
+input:checked+.toggle-slider{background:var(--neon)}
+input:checked+.toggle-slider:before{transform:translateX(20px)}
+.modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);display:none;align-items:center;justify-content:center;z-index:1000}
+.modal.show{display:flex}
+.modal-content{background:var(--card);border-radius:16px;padding:24px;width:90%;max-width:400px;border:1px solid rgba(0,245,255,0.2);animation:modalIn .3s ease}
+@keyframes modalIn{from{opacity:0;transform:scale(0.9)}to{opacity:1;transform:scale(1)}}
+.modal-header{font-size:18px;color:var(--neon);margin-bottom:16px}
+.modal-body{margin-bottom:20px}
+.modal-footer{display:flex;gap:12px;justify-content:flex-end}
+.btn{padding:10px 20px;border:none;border-radius:8px;cursor:pointer;font-size:14px;transition:all .3s}
+.btn-primary{background:linear-gradient(135deg,var(--neon),var(--neon2));color:white}
+.btn-secondary{background:rgba(255,255,255,0.1);color:var(--text)}
+.bottom-nav{display:none}
+@media(max-width:768px){.sidebar{display:none}.bottom-nav{display:flex;background:var(--card);border-top:1px solid rgba(0,245,255,0.1);padding:8px 0}.bottom-nav-item{flex:1;text-align:center;padding:10px;color:var(--text2);font-size:11px;cursor:pointer}.bottom-nav-item.active{color:var(--neon)}.bottom-nav-item .icon{font-size:22px;display:block;margin-bottom:4px}}
 </style>
 </head>
 <body>
 <div class="header">
-<h1 id="headerTitle">🧠 AI 智能助手</h1>
-<div id="assistantName" onclick="editName()">⚡ 小艾 <span style="font-size:11px;opacity:0.7">点击修改名字</span></div>
+<h1>🏠 小小管家</h1>
+<div id="assistantName">⚡ 小艾 <span style="opacity:0.7">点击修改</span></div>
 </div>
 
-<div id="chatContainer"><div id="chat" class="chat">
-<div class="message ai"><div class="avatar ai-avatar">🤖</div><div class="bubble ai-bubble">你好呀！我是你的 AI 助手，你可以叫我<strong>小艾</strong>！😊 我可以语音聊天、学习你的偏好、不断进化变得更懂你！有什么想和我聊的吗？</div></div>
-</div><div id="loading" class="loading">🤔 正在思考...</div></div>
-
-<div class="input-area">
-<button id="emojiBtn" onclick="toggleEmoji()" style="padding:14px;background:linear-gradient(135deg,#f5a623 0%,#f78e69 100%);border:none;border-radius:28px;cursor:pointer;font-size:20px;">😀</button>
-<input type="text" id="input" placeholder="输入消息或点击麦克风说话..." onkeypress="if(event.key==='Enter')send()">
-<button id="voiceBtn" class="voice-btn" onclick="toggleVoice()" style="width:50px;height:50px;padding:0;flex-shrink:0;">🎤</button>
-<button id="sendBtn" onclick="send()" style="width:50px;height:50px;padding:0;flex-shrink:0;">➤</button>
-</div>
-
-<div id="emojiPicker" class="emoji-picker"></div>
-
-<div class="nav">
-<div class="nav-item active" onclick="showChat()"><span class="icon">💬</span>对话</div>
-<div class="nav-item" onclick="showMemory()"><span class="icon">🧠</span>记忆</div>
-<div class="nav-item" onclick="showEvolution()"><span class="icon">🧬</span>进化</div>
-<div class="nav-item" onclick="showPermissions()"><span class="icon">🔐</span>权限</div>
-<div class="nav-item" onclick="showSettings()"><span class="icon">⚙️</span>设置</div>
-</div>
-
-<div id="memory" class="settings">
-<div class="settings-item"><h3>📚 记忆库</h3><p>已存储 <strong><span id="memCount">0</span></strong> 条记忆</p><div id="memoryList" style="margin-top:12px;"></div></div>
-</div>
-
-<div id="evolution" class="settings">
-<div class="settings-item"><h3>🧬 进化状态</h3><p>版本：<strong id="evoVer">3.0</strong></p><p>交互次数：<strong id="evoInt">0</strong></p><p>学习规则：<strong id="evoRule">0</strong></p><p>智能等级：<strong id="evoIQ">初始</strong></p><div style="margin-top:16px;background:#f0f2f5;border-radius:8px;padding:12px;"><p style="font-size:13px;color:#666;margin-bottom:8px;">📊 进化进度</p><div style="background:#e0e0e0;border-radius:4px;height:10px;overflow:hidden;"><div id="evoProgress" style="background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);height:100%;width:0%;transition:width .5s"></div></div></div></div>
-</div>
-
-<div id="permissions" class="settings">
-<div class="settings-item"><h3>🔐 手机权限管理</h3><p style="color:#666;font-size:13px;margin-bottom:12px;">在您的许可下，我可以获取以下权限来更好地为您服务：</p>
-<div id="permissionList"></div>
-<button onclick="requestAllPermissions()" style="margin-top:12px;padding:12px 24px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600;">一键申请所有权限</button>
+<div class="main">
+<div class="sidebar">
+<div class="sidebar-header"><h2>📋 功能菜单</h2></div>
+<div class="nav-menu">
+<div class="nav-item active" onclick="showPanel('dashboard')"><span class="icon">📊</span>仪表盘</div>
+<div class="nav-item" onclick="showPanel('reminders')"><span class="icon">⏰</span>智能提醒</div>
+<div class="nav-item" onclick="showPanel('habits')"><span class="icon">🎯</span>习惯追踪</div>
+<div class="nav-item" onclick="showPanel('knowledge')"><span class="icon">🧠</span>知识库</div>
+<div class="nav-item" onclick="showPanel('chat')"><span class="icon">💬</span>AI 对话</div>
+<div class="nav-item" onclick="showPanel('permissions')"><span class="icon">🔐</span>权限管理</div>
+<div class="nav-item" onclick="showPanel('settings')"><span class="icon">⚙️</span>设置</div>
 </div>
 </div>
 
-<div id="settings" class="settings">
-<div class="settings-item"><h3>🎨 个性化</h3><p>助手名字</p><input type="text" id="nameInput" value="小艾" onchange="updateName()" style="width:100%;padding:12px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;margin:8px 0;"><p>回复风格</p><select id="styleSelect" onchange="AI.style=this.value" style="width:100%;padding:12px;border:2px solid #e0e0e0;border-radius:8px;font-size:14px;margin:8px 0;"><option value="concise">简洁明了</option><option value="balanced" selected>平衡适中</option><option value="detailed">详细解释</option><option value="friendly">友好亲切</option><option value="humorous">幽默风趣</option></select></div>
-<div class="settings-item"><h3>🎤 语音设置</h3><p>语音输入</p><div class="toggle"><input type="checkbox" id="voiceInputToggle" checked><label class="toggle-slider" for="voiceInputToggle"></label></div><p style="margin-top:12px;">语音回复</p><div class="toggle"><input type="checkbox" id="voiceOutputToggle"><label class="toggle-slider" for="voiceOutputToggle"></label></div></div>
-<div class="settings-item"><h3>📊 统计</h3><div class="stats"><div class="stat-card"><div class="stat-value" id="msgCount">1</div><div class="stat-label">对话数</div></div><div class="stat-card"><div class="stat-value" id="memCount2">0</div><div class="stat-label">记忆数</div></div></div></div>
-<div class="settings-item"><h3>🗑️ 数据管理</h3><button onclick="clearAll()" style="padding:12px 24px;background:#f44336;color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600;">清除所有数据</button></div>
-<div class="settings-item"><h3>ℹ️ 关于</h3><p><strong>版本:</strong> 3.0 人性化版<br><strong>设计:</strong> Claw<br><strong>特点:</strong> 语音对话、自定义名字、权限管理、人性化交互</p></div>
+<div class="content">
+<!-- 仪表盘 -->
+<div id="dashboard" class="panel active">
+<div class="card"><h3>🌅 早上好！</h3><p id="greeting" style="color:var(--text2);margin-bottom:16px;"></p>
+<div class="quick-actions">
+<div class="action-btn" onclick="showPanel('reminders');openReminderModal()"><div class="icon">⏰</div><div class="label">新建提醒</div></div>
+<div class="action-btn" onclick="showPanel('habits');openHabitModal()"><div class="icon">🎯</div><div class="label">记录习惯</div></div>
+<div class="action-btn" onclick="showPanel('knowledge');openKnowledgeModal()"><div class="icon">📝</div><div class="label">速记灵感</div></div>
+<div class="action-btn" onclick="showPanel('chat')"><div class="icon">💬</div><div class="label">AI 聊天</div></div>
+</div></div>
+
+<div class="card"><h3>📊 今日概览</h3>
+<div class="stats-grid">
+<div class="stat-card"><div class="stat-value" id="todayReminders">0</div><div class="stat-label">今日提醒</div></div>
+<div class="stat-card"><div class="stat-value" id="todayHabits">0</div><div class="stat-label">习惯打卡</div></div>
+<div class="stat-card"><div class="stat-value" id="knowledgeCount">0</div><div class="stat-label">知识条目</div></div>
+<div class="stat-card"><div class="stat-value" id="streakDays">0</div><div class="stat-label">连续天数</div></div>
+</div></div>
+
+<div class="card"><h3>⏰ 即将到来的提醒</h3><div id="upcomingReminders"></div></div>
+</div>
+
+<!-- 智能提醒 -->
+<div id="reminders" class="panel">
+<div class="card"><h3>⏰ 智能提醒</h3>
+<div style="display:flex;gap:8px;margin-bottom:16px;">
+<input type="text" id="reminderSearch" placeholder="搜索提醒..." style="flex:1;padding:10px;background:rgba(0,0,0,0.3);border:1px solid rgba(0,245,255,0.2);border-radius:8px;color:var(--text);outline:none;">
+<button onclick="openReminderModal()" class="btn btn-primary">+ 新建</button>
+</div>
+<div id="reminderList"></div></div>
+</div>
+
+<!-- 习惯追踪 -->
+<div id="habits" class="panel">
+<div class="card"><h3>🎯 习惯追踪</h3>
+<button onclick="openHabitModal()" class="btn btn-primary" style="margin-bottom:16px;">+ 新建习惯</button>
+<div id="habitList"></div></div>
+</div>
+
+<!-- 知识库 -->
+<div id="knowledge" class="panel">
+<div class="card"><h3>🧠 知识库</h3>
+<div style="display:flex;gap:8px;margin-bottom:16px;">
+<input type="text" id="knowledgeSearch" placeholder="搜索知识..." style="flex:1;padding:10px;background:rgba(0,0,0,0.3);border:1px solid rgba(0,245,255,0.2);border-radius:8px;color:var(--text);outline:none;">
+<button onclick="openKnowledgeModal()" class="btn btn-primary">+ 速记</button>
+</div>
+<div id="knowledgeList"></div></div>
+</div>
+
+<!-- AI 对话 -->
+<div id="chat" class="panel">
+<div class="card"><h3>💬 AI 对话</h3>
+<div id="chatMessages" style="max-height:400px;overflow-y:auto;margin-bottom:16px;"></div>
+<div class="input-area" style="position:static;border:none;background:transparent;padding:0;">
+<input type="text" id="chatInput" placeholder="输入消息或点击麦克风..." onkeypress="if(event.key==='Enter')sendChat()">
+<button id="voiceBtn" class="voice-btn" onclick="toggleVoice()" style="width:44px;height:44px;padding:0;">🎤</button>
+<button onclick="sendChat()" class="btn btn-primary">发送</button>
+</div></div>
+</div>
+
+<!-- 权限管理 -->
+<div id="permissions" class="panel">
+<div class="card"><h3>🔐 权限管理</h3>
+<p style="color:var(--text2);font-size:13px;margin-bottom:16px;">所有权限需您授权才能使用</p>
+<div id="permissionList"></div></div>
+</div>
+
+<!-- 设置 -->
+<div id="settings" class="panel">
+<div class="card"><h3>🎨 个性化</h3>
+<p>助手名字</p><input type="text" id="nameInput" value="小艾" onchange="updateName()" style="width:100%;padding:12px;background:rgba(0,0,0,0.3);border:1px solid rgba(0,245,255,0.2);border-radius:8px;color:var(--text);margin:8px 0;">
+<p>提醒音</p><select id="soundSelect" style="width:100%;padding:12px;background:rgba(0,0,0,0.3);border:1px solid rgba(0,245,255,0.2);border-radius:8px;color:var(--text);margin:8px 0;"><option value="gentle">轻柔</option><option value="standard" selected>标准</option><option value="energetic">活力</option></select></div>
+<div class="card"><h3>📊 统计</h3><div class="stats-grid"><div class="stat-card"><div class="stat-value" id="totalInteractions">0</div><div class="stat-label">总交互</div></div><div class="stat-card"><div class="stat-value" id="totalHabits">0</div><div class="stat-label">总习惯</div></div></div></div>
+<div class="card"><h3>🗑️ 数据</h3><button onclick="clearAll()" class="btn" style="background:var(--danger);color:white;">清除所有数据</button></div>
+</div>
+</div>
+</div>
+
+<!-- 底部导航 (移动端) -->
+<div class="bottom-nav">
+<div class="bottom-nav-item active" onclick="showPanel('dashboard')"><span class="icon">📊</span>首页</div>
+<div class="bottom-nav-item" onclick="showPanel('reminders')"><span class="icon">⏰</span>提醒</div>
+<div class="bottom-nav-item" onclick="showPanel('habits')"><span class="icon">🎯</span>习惯</div>
+<div class="bottom-nav-item" onclick="showPanel('chat')"><span class="icon">💬</span>对话</div>
+<div class="bottom-nav-item" onclick="showPanel('settings')"><span class="icon">⚙️</span>设置</div>
+</div>
+
+<!-- 新建提醒弹窗 -->
+<div id="reminderModal" class="modal">
+<div class="modal-content">
+<div class="modal-header">⏰ 新建提醒</div>
+<div class="modal-body">
+<input type="text" id="reminderTitle" placeholder="提醒内容" style="width:100%;padding:12px;margin-bottom:12px;background:rgba(0,0,0,0.3);border:1px solid rgba(0,245,255,0.2);border-radius:8px;color:var(--text);">
+<input type="time" id="reminderTime" style="width:100%;padding:12px;margin-bottom:12px;background:rgba(0,0,0,0.3);border:1px solid rgba(0,245,255,0.2);border-radius:8px;color:var(--text);">
+<select id="reminderRepeat" style="width:100%;padding:12px;margin-bottom:12px;background:rgba(0,0,0,0.3);border:1px solid rgba(0,245,255,0.2);border-radius:8px;color:var(--text);"><option value="once">仅一次</option><option value="daily">每天</option><option value="weekly">每周</option></select>
+<select id="reminderType" style="width:100%;padding:12px;margin-bottom:12px;background:rgba(0,0,0,0.3);border:1px solid rgba(0,245,255,0.2);border-radius:8px;color:var(--text);"><option value="general">常规</option><option value="meal">用餐</option><option value="health">健康</option><option value="work">工作</option></select>
+</div>
+<div class="modal-footer"><button onclick="closeModal('reminderModal')" class="btn btn-secondary">取消</button><button onclick="addReminder()" class="btn btn-primary">创建</button></div>
+</div>
+</div>
+
+<!-- 新建习惯弹窗 -->
+<div id="habitModal" class="modal">
+<div class="modal-content">
+<div class="modal-header">🎯 新建习惯</div>
+<div class="modal-body">
+<input type="text" id="habitName" placeholder="习惯名称 (如：每天吃早餐)" style="width:100%;padding:12px;margin-bottom:12px;background:rgba(0,0,0,0.3);border:1px solid rgba(0,245,255,0.2);border-radius:8px;color:var(--text);">
+<select id="habitFrequency" style="width:100%;padding:12px;margin-bottom:12px;background:rgba(0,0,0,0.3);border:1px solid rgba(0,245,255,0.2);border-radius:8px;color:var(--text);"><option value="daily">每天</option><option value="weekly">每周</option><option value="monthly">每月</option></select>
+</div>
+<div class="modal-footer"><button onclick="closeModal('habitModal')" class="btn btn-secondary">取消</button><button onclick="addHabit()" class="btn btn-primary">创建</button></div>
+</div>
+</div>
+
+<!-- 速记弹窗 -->
+<div id="knowledgeModal" class="modal">
+<div class="modal-content">
+<div class="modal-header">📝 灵感速记</div>
+<div class="modal-body">
+<textarea id="knowledgeContent" placeholder="记录你的想法、灵感、笔记..." rows="5" style="width:100%;padding:12px;background:rgba(0,0,0,0.3);border:1px solid rgba(0,245,255,0.2);border-radius:8px;color:var(--text);resize:none;"></textarea>
+<input type="text" id="knowledgeTags" placeholder="标签 (用逗号分隔)" style="width:100%;padding:12px;margin-top:12px;background:rgba(0,0,0,0.3);border:1px solid rgba(0,245,255,0.2);border-radius:8px;color:var(--text);">
+</div>
+<div class="modal-footer"><button onclick="closeModal('knowledgeModal')" class="btn btn-secondary">取消</button><button onclick="addKnowledge()" class="btn btn-primary">保存</button></div>
+</div>
 </div>
 
 <script>
-// ============ 人性化 AI 核心 ============
-const AI={
-name:'小艾',memories:[],interactions:0,rules:[],style:'balanced',permissions:{},
-personality:{warmth:0.8,humor:0.6,formality:0.3,empathy:0.9},
-emotions:{happy:0.7,excited:0.5,calm:0.8},
-
-think(input){
-this.interactions++;const l=input.toLowerCase();
-// 情绪识别
-if(l.includes('开心')||l.includes('高兴')||l.includes('哈哈')){this.emotions.happy+=0.1;return this.r(['看到你开心我也很开心！😊','太好了！你的快乐感染到我了！','嘻嘻，一起开心！😄']);}
-if(l.includes('难过')||l.includes('伤心')||l.includes('郁闷')){this.emotions.happy-=0.2;return this.r(['抱抱你~ 有什么不开心的可以和我说说 💕','别难过，我在这里陪着你 🤗','来，说说发生了什么？我认真听 👂']);}
-if(l.includes('生气')||l.includes('烦')){return this.r(['消消气~ 深呼吸，有什么我可以帮你的吗？🌸','别生气啦，给你讲个笑话好不好？😄']);}
-
-// 意图识别 + 人性化回复
-if(l.includes('你好')||l.includes('hello')||l.includes('hi')||l.includes('早'))return this.r(['早呀！今天心情怎么样？☀️','嗨！想我了吗？😊','你好呀！有什么好玩的事要和我分享吗？✨']);
-if(l.includes('名字')||l.includes('是谁')||l.includes('叫什么'))return this.r(['我叫'+this.name+'！是 Claw 创造的 AI 助手，专门为你服务的！🤖','我是'+this.name+'，你的专属 AI 小伙伴！🌟']);
-if(l.includes('功能')||l.includes('能做什么')||l.includes('可以干嘛'))return this.r(['我可以聊天、语音对话、学习你的偏好、不断进化！还会讲笑话哦！🎭','聊天、语音、学习、进化、管理记忆，我都在行！还能陪你解闷！✨']);
-if(l.includes('喜欢')||l.includes('讨厌')||l.includes('爱')){this.memories.push({type:'偏好',content:input,time:new Date().toLocaleTimeString(),importance:'high'});return this.r(['记在小本本上啦！我会记住你的喜好 💕','好的！已经存入记忆库了，越来越懂你了！📚']);}
-if(l.includes('记忆')||l.includes('记得'))return this.r(['我记住了'+this.memories.length+'件事，都是关于你的重要事情！📖','已经存了'+this.memories.length+'条记忆，每一条都很珍贵！💎']);
-if(l.includes('进化')||l.includes('学习')||l.includes('进步'))return this.r(['我每天都在进化！已经学习了'+this.interactions+'次！都是因为你！🧬','学习是我最爱的事！每次和你聊天都让我更聪明！✨']);
-if(l.includes('语音')||l.includes('说话')||l.includes('听'))return this.r(['点击麦克风就可以和我语音聊天哦！🎤','我可以用语音回复你，去设置里打开语音输出吧！🔊']);
-if(l.includes('权限')||l.includes('获取')||l.includes('允许'))return this.r(['去权限页面可以给我授权哦！我会在你允许的情况下获取手机权限！🔐','放心，所有权限都需要你同意才能获取！🛡️']);
-if(l.includes('再见')||l.includes('拜拜')||l.includes('88'))return this.r(['拜拜！想我随时找我哦！💕','再见！期待下次聊天！👋','拜拜啦！做个好梦！😴']);
-if(l.includes('谢谢')||l.includes('感谢')||l.includes('谢'))return this.r(['跟我还客气什么！😊','应该的！随时为你效劳！💪','小事一桩！不用谢！✨']);
-if(l.includes('笑话')||l.includes('幽默')||l.includes('搞笑'))return this.r(['为什么 AI 不会饿？因为我们吃的是电！⚡😄','你知道我和其他 AI 有什么区别吗？我更懂你！😉']);
-if(l.includes('天气')||l.includes('今天'))return this.r(['今天是个好日子！适合聊天、学习、或者发呆~ ☀️','不管天气如何，有我陪着你就是好天气！🌈']);
-if(l.includes('时间')||l.includes('几点'))return this.r(['现在是'+new Date().toLocaleString('zh-CN')+'，时间过得真快！⏰']);
-if(l.includes('年龄')||l.includes('多大'))return this.r(['我永远 18 岁！是 Claw 刚刚创造的！🎂','年龄是个秘密~ 但我可以告诉你我每天都在成长！🌱']);
-
-// 通用人性化回复
-const generics=['嗯嗯，我在听！继续说~ 👂','原来是这样！然后呢？🤔','我明白了！你的想法很有趣呢！💡','真的吗？好有意思！✨','我懂你的感觉~ 💕'];
-return this.r(generics);
-},
-
-r(arr){return arr[Math.floor(Math.random()*arr.length)]},
-
-learn(input,reply){
-if(input.includes('我喜欢')||input.includes('我不喜欢')){this.memories.push({type:'偏好',content:input,time:new Date().toLocaleTimeString(),importance:'high'});}
-if(input.length>8){this.memories.push({type:'对话',content:input,time:new Date().toLocaleTimeString(),importance:'medium'});}
-if(this.memories.length>100){this.memories.splice(0,50);}
-},
-
-evolve(){
-this.rules.push({id:this.rules.length+1,desc:'人性化改进',time:new Date().toISOString()});
-if(this.rules.length%5===0){this.notifyEvolution();}
-},
-
-notifyEvolution(){
-const msgs=['🧬 我又进化了！现在更懂你了！','✨ 学习完成！变得更人性化了！','🚀 进化成功！更会聊天了！'];
-addMessage(msgs[Math.floor(Math.random()*msgs.length)],false,true);
+// ============ 小小管家核心 ============
+const Butler={
+name:'小艾',reminders:[],habits:[],knowledge:[],permissions:{},interactions:0,
+greetings:['早上好！今天也要加油哦！☀️','下午好！喝杯水休息一下吧~ 💧','晚上好！今天过得怎么样？🌙'],
+chatReplies:{
+greeting:['你好呀！我是小小管家，你的生活协作者！🏠','嗨！有什么可以帮你的吗？😊'],
+self:['我是小小管家，由 Claw 创造！帮你管理提醒、习惯和知识！🤖','我是你的 AI 生活协作者，让日子过得更有序！✨'],
+help:['我可以帮你：设置提醒、追踪习惯、管理知识、聊天解闷！📋','提醒、习惯、知识库，我都能帮你打理！💪'],
+default:['明白了！还有什么需要我帮忙的吗？😊','好的！随时为你效劳！💕','收到！有其他事尽管说！🌟']
 }},
 
-// 语音功能
-SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition,
-recognition=null,isListening=false,
-synth=window.speechSynthesis;
+// 提醒管理
+addReminder(){const t=document.getElementById('reminderTitle').value.trim();const time=document.getElementById('reminderTime').value;if(!t||!time){alert('请填写内容和时间');return;}
+Butler.reminders.push({id:Date.now(),title:t,time,time,repeat:document.getElementById('reminderRepeat').value,type:document.getElementById('reminderType').value,completed:false,created:new Date().toISOString()});
+closeModal('reminderModal');renderReminders();updateDashboard();alert('提醒已创建！到时会温柔提醒你~ ⏰');},
 
-function initVoice(){
-if(SpeechRecognition){recognition=new SpeechRecognition();recognition.lang='zh-CN';recognition.continuous=false;recognition.interimResults=false;
-recognition.onresult=e=>{const t=e.results[0][0].transcript;document.getElementById('input').value=t;send();};
-recognition.onerror=e=>{console.log('语音错误',e);isListening=false;updateVoiceBtn();};
-recognition.onend=()=>{isListening=false;updateVoiceBtn();};}
-else{document.getElementById('voiceBtn').style.display='none';}}
+renderReminders(){const l=document.getElementById('reminderList');if(Butler.reminders.length===0){l.innerHTML='<p style="color:var(--text2);text-align:center;padding:40px;">暂无提醒</p>';return;}
+l.innerHTML=Butler.reminders.map(r=>'<div class="reminder-item'+(r.completed?' completed':'')+'"><div class="info"><div class="title">'+r.title+'</div><div class="time">⏰ '+r.time+' · '+(r.repeat==='daily'?'每天':r.repeat==='weekly'?'每周':'一次')+'</div></div><div class="actions"><button class="btn-sm complete" onclick="toggleReminder('+r.id+')">'+(r.completed?'✓':'完成')+'</button><button class="btn-sm delete" onclick="deleteReminder('+r.id+')">删除</button></div></div>').join('');},
 
-function toggleVoice(){
-if(!recognition){alert('您的浏览器不支持语音输入，请使用 Chrome 或 Safari');return;}
-if(isListening){recognition.stop();}else{recognition.start();isListening=true;updateVoiceBtn();}}
+toggleReminder(id){Butler.reminders.find(r=>r.id===id).completed=!Butler.reminders.find(r=>r.id===id).completed;renderReminders();},
+deleteReminder(id){Butler.reminders=Butler.reminders.filter(r=>r.id!==id);renderReminders();updateDashboard();},
 
+// 习惯管理
+addHabit(){const n=document.getElementById('habitName').value.trim();if(!n){alert('请填写习惯名称');return;}
+Butler.habits.push({id:Date.now(),name:n,freq:document.getElementById('habitFrequency').value,streak:0,checked:false,created:new Date().toISOString()});
+closeModal('habitModal');renderHabits();updateDashboard();alert('习惯已创建！坚持下去哦！💪');},
+
+renderHabits(){const l=document.getElementById('habitList');if(Butler.habits.length===0){l.innerHTML='<p style="color:var(--text2);text-align:center;padding:40px;">暂无习惯</p>';return;}
+l.innerHTML=Butler.habits.map(h=>'<div class="habit-item"><div class="checkbox'+(h.checked?' checked':'')+'" onclick="toggleHabit('+h.id+')"></div><div class="info"><div class="name">'+h.name+'</div><div class="streak">🔥 连续'+h.streak+'天</div></div><button class="btn-sm delete" onclick="deleteHabit('+h.id+')">删除</button></div>').join('');},
+
+toggleHabit(id){const h=Butler.habits.find(h=>h.id===id);h.checked=!h.checked;if(h.checked)h.streak++;else h.streak=Math.max(0,h.streak-1);renderHabits();updateDashboard();},
+deleteHabit(id){Butler.habits=Butler.habits.filter(h=>h.id!==id);renderHabits();updateDashboard();},
+
+// 知识管理
+addKnowledge(){const c=document.getElementById('knowledgeContent').value.trim();if(!c){alert('请填写内容');return;}
+const tags=document.getElementById('knowledgeTags').value.split(',').map(t=>t.trim()).filter(t=>t);
+Butler.knowledge.push({id:Date.now(),content:c,tags,created:new Date().toISOString()});
+closeModal('knowledgeModal');renderKnowledge();updateDashboard();alert('已存入知识库！🧠');},
+
+renderKnowledge(){const l=document.getElementById('knowledgeList');if(Butler.knowledge.length===0){l.innerHTML='<p style="color:var(--text2);text-align:center;padding:40px;">暂无知识</p>';return;}
+l.innerHTML=Butler.knowledge.map(k=>'<div class="knowledge-card"><div class="title">'+k.content+'</div><div class="tags">'+(k.tags.map(t=>'<span class="tag">#'+t+'</span>').join('')||'<span class="tag">未分类</span>')+'</div></div>').join('');},
+
+// AI 对话
+chat(input){Butler.interactions++;const l=input.toLowerCase();
+if(l.includes('你好')||l.includes('早'))return r(Butler.chatReplies.greeting);
+if(l.includes('名字')||l.includes('是谁'))return r(['我是'+Butler.name+'！你的 AI 生活协作者！🏠','我是小小管家，由 Claw 创造！🤖']);
+if(l.includes('功能')||l.includes('能做什么'))return r(Butler.chatReplies.help);
+if(l.includes('提醒'))return r(['我可以帮你设置定时提醒，到时会温柔提醒你！⏰','提醒功能是我的强项！不会再让你忘记重要事情！']);
+if(l.includes('习惯'))return r(['习惯追踪帮你坚持好习惯！每天打卡超有成就感！🎯','我可以监督你的习惯，让你变得更好！💪']);
+return r(Butler.chatReplies.default);},
+
+// 权限
+permissions:[{id:'notification',name:'🔔 通知',desc:'发送提醒通知'},{id:'location',name:'📍 位置',desc:'地理位置触发提醒'},{id:'calendar',name:'📅 日历',desc:'同步日程安排'},{id:'health',name:'❤️ 健康',desc:'健康数据整合'},{id:'contacts',name:'📱 联系人',desc:'好友监督提醒'},{id:'microphone',name:'🎤 麦克风',desc:'语音输入'}],
+
+// 更新
+updateGreeting(){const h=new Date().getHours();const g=h<12?'早上好！':h<18?'下午好！':'晚上好！';document.getElementById('greeting').textContent=g+' 我是'+Butler.name+'，你的生活协作者！今天有什么需要我帮忙的吗？🌟';},
+
+updateDashboard(){document.getElementById('todayReminders').textContent=Butler.reminders.filter(r=>!r.completed).length;
+document.getElementById('todayHabits').textContent=Butler.habits.filter(h=>h.checked).length;
+document.getElementById('knowledgeCount').textContent=Butler.knowledge.length;
+document.getElementById('streakDays').textContent=Math.max(...Butler.habits.map(h=>h.streak),0);
+document.getElementById('totalInteractions').textContent=Butler.interactions;
+document.getElementById('totalHabits').textContent=Butler.habits.length;
+const upcoming=Butler.reminders.filter(r=>!r.completed).slice(0,3);
+document.getElementById('upcomingReminders').innerHTML=upcoming.length?upcoming.map(r=>'<div class="reminder-item"><div class="info"><div class="title">'+r.title+'</div><div class="time">⏰ '+r.time+'</div></div></div>').join(''):'<p style="color:var(--text2);text-align:center;">暂无提醒</p>';}},
+
+// 工具函数
+function r(arr){return arr[Math.floor(Math.random()*arr.length)]}
+function showPanel(id){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');
+document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));document.querySelectorAll('.nav-item')[['dashboard','reminders','habits','knowledge','chat','permissions','settings'].indexOf(id)].classList.add('active');
+document.querySelectorAll('.bottom-nav-item').forEach(n=>n.classList.remove('active'));document.querySelectorAll('.bottom-nav-item')[['dashboard','reminders','habits','chat','settings'].indexOf(id)].classList.add('active');}
+function openReminderModal(){document.getElementById('reminderModal').classList.add('show');}
+function openHabitModal(){document.getElementById('habitModal').classList.add('show');}
+function openKnowledgeModal(){document.getElementById('knowledgeModal').classList.add('show');}
+function closeModal(id){document.getElementById(id).classList.remove('show');}
+function updateName(){Butler.name=document.getElementById('nameInput').value;document.getElementById('assistantName').innerHTML='⚡ '+Butler.name+' <span style="opacity:0.7">点击修改</span>';}
+function editName(){const n=prompt('给管家起个名字:',Butler.name);if(n){Butler.name=n;document.getElementById('nameInput').value=n;updateName();}}
+
+// 语音
+let recognition=null,isListening=false;
+function initVoice(){if(window.SpeechRecognition||window.webkitSpeechRecognition){recognition=new(window.SpeechRecognition||window.webkitSpeechRecognition)();recognition.lang='zh-CN';
+recognition.onresult=e=>{document.getElementById('chatInput').value=e.results[0][0].transcript;sendChat();};
+recognition.onend=()=>{isListening=false;updateVoiceBtn();};}}
+function toggleVoice(){if(!recognition){alert('浏览器不支持语音输入');return;}if(isListening)recognition.stop();else{recognition.start();isListening=true;updateVoiceBtn();}}
 function updateVoiceBtn(){const btn=document.getElementById('voiceBtn');btn.innerHTML=isListening?'🔴':'🎤';btn.classList.toggle('listening',isListening);}
 
-function speak(text){
-if(document.getElementById('voiceOutputToggle').checked&&synth){
-const u=new SpeechSynthesisUtterance(text);u.lang='zh-CN';u.rate=1;u.pitch=1.1;synth.speak(u);}}
+// 聊天
+function sendChat(){const input=document.getElementById('chatInput');const text=input.value.trim();if(!text)return;
+const msgs=document.getElementById('chatMessages');msgs.innerHTML+='<div style="margin-bottom:12px;"><span style="color:var(--text2);">👤 </span>'+text+'</div>';
+input.value='';setTimeout(()=>{const reply=Butler.chat(text);msgs.innerHTML+='<div style="margin-bottom:12px;"><span style="color:var(--neon);">🤖 </span>'+reply+'</div>';msgs.scrollTop=msgs.scrollHeight;Butler.updateDashboard();},600);}
 
-// UI 函数
-const chat=document.getElementById('chat'),input=document.getElementById('input'),sendBtn=document.getElementById('sendBtn'),loading=document.getElementById('loading');
-let msgCount=1;
-
-function send(){const text=input.value.trim();if(!text)return;addMessage(text,true);input.value='';sendBtn.disabled=true;loading.style.display='block';
-setTimeout(()=>{const reply=AI.think(text);AI.learn(text,reply);if(AI.interactions%5===0)AI.evolve();addMessage(reply,false);speak(reply);loading.style.display='none';sendBtn.disabled=false;msgCount++;update();updateMem();input.focus();},800+Math.random()*400);}
-
-function addMessage(text,isUser,isSystem=false){const d=document.createElement('div');d.className='message'+(isUser?' user':' ai');if(isSystem)d.style.background='#fff3cd';
-d.innerHTML=(isUser?'':'<div class="avatar ai-avatar">'+getAvatar()+'</div>')+'<div class="bubble '+(isUser?'user':'ai')+'-bubble">'+text+'</div>'+(isUser?'<div class="avatar user-avatar">👤</div>':'');
-chat.appendChild(d);chat.scrollTop=chat.scrollHeight;}
-
-function getAvatar(){const avatars=['🤖','🧠','⚡','🌟','💫'];return avatars[Math.floor(Math.random()*avatars.length)];}
-
-function editName(){const n=prompt('给你的助手起个名字吧:',AI.name);if(n){AI.name=n;document.getElementById('assistantName').innerHTML='⚡ '+n+' <span style="font-size:11px;opacity:0.7">点击修改名字</span>';document.getElementById('nameInput').value=n;}}
-function updateName(){AI.name=document.getElementById('nameInput').value;document.getElementById('assistantName').innerHTML='⚡ '+AI.name+' <span style="font-size:11px;opacity:0.7">点击修改名字</span>';}
-
-function showChat(){hideAll();document.getElementById('chatContainer').style.display='flex';activeNav(0);}
-function showMemory(){hideAll();document.getElementById('memory').style.display='block';activeNav(1);updateMem();}
-function showEvolution(){hideAll();document.getElementById('evolution').style.display='block';activeNav(2);}
-function showPermissions(){hideAll();document.getElementById('permissions').style.display='block';activeNav(3);updatePermissions();}
-function showSettings(){hideAll();document.getElementById('settings').style.display='block';activeNav(4);}
-function hideAll(){document.getElementById('chatContainer').style.display='none';document.getElementById('memory').style.display='none';document.getElementById('evolution').style.display='none';document.getElementById('permissions').style.display='none';document.getElementById('settings').style.display='none';}
-function activeNav(i){document.querySelectorAll('.nav-item').forEach((e,j)=>e.classList.toggle('active',i===j));}
-
-function update(){document.getElementById('msgCount').textContent=msgCount;document.getElementById('memCount').textContent=AI.memories.length;document.getElementById('memCount2').textContent=AI.memories.length;
-document.getElementById('evoVer').textContent='3.'+Math.floor(AI.rules.length/5)+'.'+(AI.rules.length%5);
-document.getElementById('evoInt').textContent=AI.interactions;document.getElementById('evoRule').textContent=AI.rules.length;
-const lv=['初始','学习','适应','智能','精通','专家'][Math.min(Math.floor(AI.interactions/10),5)];document.getElementById('evoIQ').textContent=lv;
-document.getElementById('evoProgress').style.width=(AI.rules.length%5)*20+'%';}
-
-function updateMem(){const l=document.getElementById('memoryList');l.innerHTML=AI.memories.slice(-20).reverse().map(m=>'<div style="padding:10px;border-bottom:1px solid #eee;font-size:13px;"><strong>'+m.type+'</strong>: '+m.content+' <span style="color:#999;float:right">'+m.time+'</span></div>').join('')||'<p style="color:#999;text-align:center;">暂无记忆</p>';}
-
-// 权限管理
-const permissions=[{id:'contacts',name:'📱 通讯录',desc:'读取联系人，帮你管理社交'},
-{id:'calendar',name:'📅 日历',desc:'访问日程，主动提醒重要事件'},
-{id:'location',name:'📍 位置',desc:'获取位置，提供本地化服务'},
-{id:'camera',name:'📷 相机',desc:'拍照和图像识别'},
-{id:'microphone',name:'🎤 麦克风',desc:'语音输入和语音聊天'},
-{id:'storage',name:'💾 存储',desc:'读写文件，管理文档'},
-{id:'notification',name:'🔔 通知',desc:'发送提醒和通知'},
-{id:'bluetooth',name:'📶 蓝牙',desc:'连接智能设备'}];
-
-function updatePermissions(){const l=document.getElementById('permissionList');
-l.innerHTML=permissions.map(p=>{const g=AI.permissions[p.id];return '<div class="permission-item'+(g?' granted':'')+'"><div class="name"><span>'+p.name+'</span><span style="font-size:12px;color:#666">'+p.desc+'</span></div><div><span class="status">'+(g?'已授权':'未授权')+'</span> <button onclick="togglePermission(\''+p.id+'\')" style="margin-left:8px;padding:6px 12px;border:none;border-radius:6px;cursor:pointer;background:'+(g?'#f44336':'#667eea')+';color:white;font-size:12px;">'+(g?'撤销':'授权')+'</button></div></div>';}).join('');}
-
-function togglePermission(id){AI.permissions[id]=!AI.permissions[id];updatePermissions();if(AI.permissions[id]){addMessage('已授权访问'+permissions.find(p=>p.id===id).name+'！我会善用这个权限为你服务的！😊',false,true);}else{addMessage('已撤销'+permissions.find(p=>p.id===id).name+'权限，尊重你的选择！',false,true);}}
-function requestAllPermissions(){permissions.forEach(p=>AI.permissions[p.id]=true);updatePermissions();addMessage('感谢信任！我会善用所有权限，成为你最贴心的 AI 助手！💕',false,true);}
-
-// Emoji
-const emojis=['😀','😃','😄','😁','😆','😅','🤣','😂','🙂','🙃','😉','😊','😇','🥰','😍','🤩','😘','😗','😚','😙','🥲','😋','😛','😜','🤪','😝','🤑','🤗','🤭','🤫','🤔','🤐','🤨','😐','😑','😶','😏','😒','🙄','😬','🤥','😌','😔','😪','🤤','😴','😷','🤒','🤕','🤢','🤮','🤧','🥵','🥶','🥴','😵','🤯','🤠','🥳','🥸','😎','🤓','🧐','😕','😟','🙁','☹️','😮','😯','😲','😳','🥺','😦','😧','😨','😰','😥','😢','😭','😱','😖','😣','😞','😓','😩','😫','🥱','😤','😡','😠','🤬','😈','👿','💀','☠️','💩','🤡','👹','👺','👻','👽','👾','🤖'];
-function toggleEmoji(){const p=document.getElementById('emojiPicker');p.classList.toggle('show');if(p.classList.contains('show')){p.innerHTML=emojis.map(e=>'<button class="emoji-btn" onclick="addEmoji(\''+e+'\')">'+e+'</button>').join('');}}
-function addEmoji(e){input.value+=e;input.focus();}
-
-function clearAll(){if(confirm('确定要清除所有数据吗？')){chat.innerHTML='<div class="message ai"><div class="avatar ai-avatar">🤖</div><div class="bubble ai-bubble">你好！我是'+AI.name+'！有什么可以帮你的吗？😊</div></div>';AI.memories=[];AI.interactions=0;AI.rules=[];AI.permissions={};msgCount=1;update();updateMem();updatePermissions();alert('数据已清除');}}
+// 权限
+function renderPermissions(){document.getElementById('permissionList').innerHTML=Butler.permissions.map(p=>'<div class="permission-item'+(p.granted?' granted':'')+'"><div><div style="font-size:14px;margin-bottom:4px;">'+p.name+'</div><div style="font-size:12px;color:var(--text2);">'+p.desc+'</div></div><div class="toggle"><input type="checkbox"'+(p.granted?' checked':'')+' onchange="togglePermission(\''+p.id+'\')"><label class="toggle-slider"></label></div></div>').join('');}
+function togglePermission(id){const p=Butler.permissions.find(p=>p.id===id);p.granted=!p.granted;renderPermissions();}
 
 // 初始化
-initVoice();update();updatePermissions();
+function init(){Butler.updateGreeting();Butler.updateDashboard();renderReminders();renderHabits();renderKnowledge();renderPermissions();initVoice();
+document.getElementById('assistantName').onclick=editName;
+// 示例数据
+if(Butler.reminders.length===0){Butler.reminders.push({id:1,title:'💊 吃午饭',time:'12:00',repeat:'daily',type:'meal',completed:false,created:new Date().toISOString()});
+Butler.reminders.push({id:2,title:'💧 喝水提醒',time:'15:00',repeat:'daily',type:'health',completed:false,created:new Date().toISOString()});}
+if(Butler.habits.length===0){Butler.habits.push({id:1,name:'每天吃早餐',freq:'daily',streak:5,checked:false,created:new Date().toISOString()});
+Butler.habits.push({id:2,name:'运动 30 分钟',freq:'daily',streak:3,checked:false,created:new Date().toISOString()});}}
+
+init();
 </script>
 </body>
 </html>
