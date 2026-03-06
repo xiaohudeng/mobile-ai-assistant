@@ -19,3 +19,28 @@
 <div class="nav-item" onclick="showMemory()"><span class="icon">🧠</span>记忆</div>
 <div class="nav-item" onclick="showSettings()"><span class="icon">⚙️</span>设置</div>
 </div>
+<div id="memory" class="settings"><div class="settings-item"><h3>📚 记忆库</h3><p>已存储 <span id="memCount">0</span> 条记忆</p><div id="memoryList" style="margin-top:12px;max-height:300px;overflow-y:auto;"></div></div></div>
+<div id="settings" class="settings">
+<div class="settings-item"><h3>🧬 进化系统</h3><p>自动学习和改进回复风格</p><label><input type="checkbox" checked> 启用主动进化</label></div>
+<div class="settings-item"><h3>🔔 通知</h3><p>显示进化改进通知</p><label><input type="checkbox" checked> 启用通知</label></div>
+<div class="settings-item"><h3>📊 统计</h3><div class="stats">
+<div class="stat-card"><div class="stat-value" id="msgCount">1</div><div class="stat-label">对话数</div></div>
+<div class="stat-card"><div class="stat-value" id="memCount2">0</div><div class="stat-label">记忆数</div></div>
+</div></div>
+<div class="settings-item"><h3>🗑️ 数据管理</h3><p>清除所有对话和记忆记录</p><button onclick="clearAll()" style="padding:10px 20px;background:#f44336;color:white;border:none;border-radius:8px;cursor:pointer;">清除所有数据</button></div>
+<div class="settings-item"><h3>ℹ️ 关于</h3><p>版本：1.0.0<br>设计：Claw<br>部署：GitHub Pages</p></div>
+</div>
+<script>
+const chat=document.getElementById('chat'),input=document.getElementById('input'),sendBtn=document.getElementById('sendBtn'),loading=document.getElementById('loading');let msgCount=1,memories=[];
+function send(){const text=input.value.trim();if(!text)return;addMessage(text,true);input.value='';sendBtn.disabled=true;loading.style.display='block';chat.scrollTop=chat.scrollHeight;memories.push({type:'用户',content:text,time:new Date().toLocaleTimeString()});updateMemoryList();setTimeout(()=>{const reply=getReply(text);addMessage(reply,false);loading.style.display='none';sendBtn.disabled=false;msgCount++;memories.push({type:'AI',content:reply,time:new Date().toLocaleTimeString()});updateMemoryList();updateStats();input.focus()},600+Math.random()*400)}
+function addMessage(text,isUser){const div=document.createElement('div');div.className='message'+(isUser?' user':' ai');div.innerHTML=`${!isUser?'<div class="avatar ai-avatar">🤖</div>':''}<div class="bubble ${isUser?'user':'ai'}-bubble">${text}</div>${isUser?'<div class="avatar user-avatar">👤</div>':''}`;chat.appendChild(div);chat.scrollTop=chat.scrollHeight}
+function getReply(input){const l=input.toLowerCase();if(l.includes('你好')||l.includes('hello'))return'你好！很高兴为你服务！😊';if(l.includes('名字')||l.includes('是谁'))return'我是你的 AI 助手，由 Claw 设计！我会学习你的偏好，越来越懂你！🧠';if(l.includes('功能')||l.includes('能做什么'))return'我可以陪你聊天、回答问题、管理知识库、自动学习和进化。越用越懂你！⚡';if(l.includes('记忆'))return`我已经记住了${memories.length}条记忆。📚`;if(l.includes('进化')||l.includes('学习'))return'我每天都在进化！🧬';if(l.includes('再见'))return'再见！👋';if(l.includes('谢谢'))return'不客气！😊';return'明白了！还有什么想聊的吗？😊'}
+function showChat(){document.getElementById('chatContainer').style.display='flex';document.getElementById('memory').style.display='none';document.getElementById('settings').style.display='none';document.querySelectorAll('.nav-item').forEach((e,i)=>e.classList.toggle('active',i===0))}
+function showMemory(){document.getElementById('chatContainer').style.display='none';document.getElementById('memory').style.display='block';document.getElementById('settings').style.display='none';document.querySelectorAll('.nav-item').forEach((e,i)=>e.classList.toggle('active',i===1));updateMemoryList()}
+function showSettings(){document.getElementById('chatContainer').style.display='none';document.getElementById('memory').style.display='none';document.getElementById('settings').style.display='block';document.querySelectorAll('.nav-item').forEach((e,i)=>e.classList.toggle('active',i===2));updateStats()}
+function updateMemoryList(){const list=document.getElementById('memoryList');list.innerHTML=memories.slice(-10).map(m=>`<div style="padding:8px;border-bottom:1px solid #eee;font-size:13px;"><strong style="color:#667eea">${m.type}:</strong> ${m.content}<span style="color:#999;float:right">${m.time}</span></div>`).join('');document.getElementById('memCount').textContent=memories.length}
+function updateStats(){document.getElementById('msgCount').textContent=msgCount;document.getElementById('memCount2').textContent=memories.length}
+function clearAll(){if(confirm('确定清除所有数据？')){chat.innerHTML='<div class="message ai"><div class="avatar ai-avatar">🤖</div><div class="bubble ai-bubble">你好！我是你的 AI 助手，有什么可以帮你的吗？😊</div></div>';memories=[];msgCount=1;updateMemoryList();updateStats();alert('数据已清除')}}
+</script>
+</body>
+</html>
