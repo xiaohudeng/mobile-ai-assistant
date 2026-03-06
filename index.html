@@ -2,338 +2,467 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
-<title>小小管家 - AI 生活协作者 v4.0</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>小小管家 v5.0 - 科学习惯养成</title>
 <style>
 :root{--bg:#0a0a0f;--card:#1a1a2e;--neon:#00f5ff;--neon2:#ff00ff;--text:#e0e0e0;--text2:#888;--success:#00ff88;--warning:#ffaa00;--danger:#ff4466}
-*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--text);height:100vh;display:flex;flex-direction:column;overflow:hidden}
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:var(--bg);color:var(--text);height:100vh;display:flex;flex-direction:column}
 .header{background:linear-gradient(180deg,var(--card) 0%,transparent 100%);padding:16px;text-align:center;border-bottom:1px solid rgba(0,245,255,0.1)}
-.header h1{font-size:20px;background:linear-gradient(90deg,var(--neon),var(--neon2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700}
-#assistantName{font-size:13px;color:var(--text2);margin-top:4px;cursor:pointer}
+.header h1{font-size:20px;background:linear-gradient(90deg,var(--neon),var(--neon2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .main{flex:1;display:flex;overflow:hidden}
 .sidebar{width:280px;background:var(--card);border-right:1px solid rgba(0,245,255,0.1);display:flex;flex-direction:column}
-.sidebar-header{padding:16px;border-bottom:1px solid rgba(0,245,255,0.1)}
-.sidebar-header h2{font-size:16px;color:var(--neon)}
 .nav-menu{flex:1;overflow-y:auto;padding:8px}
 .nav-item{padding:12px 16px;margin:4px 0;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all .3s;color:var(--text2)}
-.nav-item:hover{background:rgba(0,245,255,0.1);color:var(--text)}
+.nav-item:hover{background:rgba(0,245,255,0.1)}
 .nav-item.active{background:linear-gradient(90deg,rgba(0,245,255,0.2),transparent);color:var(--neon);border-left:3px solid var(--neon)}
-.nav-item .icon{font-size:20px}
-.content{flex:1;overflow-y:auto;padding:20px;position:relative}
-.panel{display:none;animation:fadeIn .3s ease}
+.content{flex:1;overflow-y:auto;padding:20px}
+.panel{display:none;animation:fadeIn .3s}
 .panel.active{display:block}
 @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.card{background:var(--card);border-radius:12px;padding:16px;margin-bottom:16px;border:1px solid rgba(0,245,255,0.1);box-shadow:0 4px 20px rgba(0,0,0,0.3)}
+.card{background:var(--card);border-radius:12px;padding:16px;margin-bottom:16px;border:1px solid rgba(0,245,255,0.1)}
 .card h3{font-size:15px;color:var(--neon);margin-bottom:12px;display:flex;align-items:center;gap:8px}
-.quick-actions{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.action-btn{padding:20px;background:linear-gradient(135deg,rgba(0,245,255,0.1),rgba(255,0,255,0.1));border:1px solid rgba(0,245,255,0.2);border-radius:12px;cursor:pointer;transition:all .3s;text-align:center}
-.action-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,245,255,0.2)}
-.action-btn .icon{font-size:32px;margin-bottom:8px}
-.action-btn .label{font-size:13px;color:var(--text2)}
-.input-area{padding:16px;background:var(--card);border-top:1px solid rgba(0,245,255,0.1);display:flex;gap:8px;align-items:center}
-.input-area input{flex:1;padding:14px 20px;background:rgba(0,0,0,0.3);border:1px solid rgba(0,245,255,0.2);border-radius:28px;color:var(--text);font-size:15px;outline:none}
-.input-area input:focus{border-color:var(--neon)}
-.input-area button{padding:14px 20px;background:linear-gradient(135deg,var(--neon),var(--neon2));border:none;border-radius:28px;color:white;cursor:pointer;font-size:15px;transition:all .3s}
-.input-area button:hover{transform:scale(1.05)}
-.voice-btn{background:linear-gradient(135deg,#ff6b6b,#feca57)!important}
-.voice-btn.listening{animation:pulse 1s infinite}
-@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
-.reminder-item{display:flex;justify-content:space-between;align-items:center;padding:14px;background:rgba(0,0,0,0.2);border-radius:8px;margin-bottom:8px;border-left:3px solid var(--neon)}
-.reminder-item.urgent{border-left-color:var(--danger)}
-.reminder-item.completed{opacity:0.5;border-left-color:var(--success)}
-.reminder-item .info{flex:1}
-.reminder-item .title{font-size:14px;margin-bottom:4px}
-.reminder-item .time{font-size:12px;color:var(--text2)}
-.reminder-item .actions{display:flex;gap:8px}
-.btn-sm{padding:6px 12px;border:none;border-radius:6px;cursor:pointer;font-size:12px;transition:all .2s}
-.btn-sm.complete{background:var(--success);color:#000}
-.btn-sm.delete{background:var(--danger);color:white}
-.habit-item{display:flex;align-items:center;gap:12px;padding:14px;background:rgba(0,0,0,0.2);border-radius:8px;margin-bottom:8px}
-.habit-item .checkbox{width:24px;height:24px;border:2px solid var(--neon);border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s}
-.habit-item .checkbox.checked{background:var(--neon)}
-.habit-item .checkbox.checked::after{content:'✓';color:#000;font-weight:bold}
-.habit-item .info{flex:1}
-.habit-item .name{font-size:14px;margin-bottom:4px}
-.habit-item .streak{font-size:12px;color:var(--text2)}
-.knowledge-card{padding:14px;background:rgba(0,0,0,0.2);border-radius:8px;margin-bottom:8px;border-left:3px solid var(--neon2)}
-.knowledge-card .title{font-size:14px;margin-bottom:6px}
-.knowledge-card .tags{display:flex;gap:6px;flex-wrap:wrap}
-.tag{padding:3px 10px;background:rgba(0,245,255,0.1);border-radius:12px;font-size:11px;color:var(--neon)}
-.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.stat-card{background:linear-gradient(135deg,rgba(0,245,255,0.1),rgba(255,0,255,0.1));padding:20px;border-radius:12px;text-align:center;border:1px solid rgba(0,245,255,0.2)}
-.stat-value{font-size:32px;font-weight:bold;background:linear-gradient(90deg,var(--neon),var(--neon2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px}
-.stat-label{font-size:12px;color:var(--text2)}
-.permission-item{display:flex;justify-content:space-between;align-items:center;padding:12px;background:rgba(0,0,0,0.2);border-radius:8px;margin-bottom:8px}
-.permission-item.granted{background:rgba(0,255,136,0.1)}
-.toggle{position:relative;width:44px;height:24px}
-.toggle input{opacity:0;width:0;height:0}
-.toggle-slider{position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#333;transition:.3s;border-radius:24px}
-.toggle-slider:before{position:absolute;content:"";height:18px;width:18px;left:3px;bottom:3px;background:#fff;transition:.3s;border-radius:50%}
-input:checked+.toggle-slider{background:var(--neon)}
-input:checked+.toggle-slider:before{transform:translateX(20px)}
-.modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);display:none;align-items:center;justify-content:center;z-index:1000}
-.modal.show{display:flex}
-.modal-content{background:var(--card);border-radius:16px;padding:24px;width:90%;max-width:400px;border:1px solid rgba(0,245,255,0.2);animation:modalIn .3s ease}
-@keyframes modalIn{from{opacity:0;transform:scale(0.9)}to{opacity:1;transform:scale(1)}}
-.modal-header{font-size:18px;color:var(--neon);margin-bottom:16px}
-.modal-body{margin-bottom:20px}
-.modal-footer{display:flex;gap:12px;justify-content:flex-end}
 .btn{padding:10px 20px;border:none;border-radius:8px;cursor:pointer;font-size:14px;transition:all .3s}
 .btn-primary{background:linear-gradient(135deg,var(--neon),var(--neon2));color:white}
 .btn-secondary{background:rgba(255,255,255,0.1);color:var(--text)}
-.bottom-nav{display:none}
-@media(max-width:768px){.sidebar{display:none}.bottom-nav{display:flex;background:var(--card);border-top:1px solid rgba(0,245,255,0.1);padding:8px 0}.bottom-nav-item{flex:1;text-align:center;padding:10px;color:var(--text2);font-size:11px;cursor:pointer}.bottom-nav-item.active{color:var(--neon)}.bottom-nav-item .icon{font-size:22px;display:block;margin-bottom:4px}}
+.habit-plan{background:rgba(0,0,0,0.2);border-radius:12px;padding:16px;margin-bottom:16px;border-left:4px solid var(--neon)}
+.habit-plan h4{font-size:16px;margin-bottom:8px;color:var(--text)}
+.habit-plan .desc{color:var(--text2);font-size:13px;margin-bottom:12px;line-height:1.6}
+.habit-plan .schedule{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.time-badge{padding:6px 12px;background:rgba(0,245,255,0.1);border-radius:20px;font-size:12px;color:var(--neon);border:1px solid rgba(0,245,255,0.2)}
+.habit-plan .progress{background:rgba(0,0,0,0.3);border-radius:8px;height:8px;overflow:hidden;margin-bottom:12px}
+.habit-plan .progress-bar{background:linear-gradient(90deg,var(--neon),var(--neon2));height:100%;width:0%;transition:width .5s}
+.habit-plan .actions{display:flex;gap:8px;justify-content:flex-end}
+.habit-plan.completed{border-left-color:var(--success);opacity:0.7}
+.habit-plan.missed{border-left-color:var(--warning)}
+.insight-card{background:linear-gradient(135deg,rgba(0,245,255,0.1),rgba(255,0,255,0.1));border-radius:12px;padding:16px;margin-bottom:16px;border:1px solid rgba(0,245,255,0.2)}
+.insight-card .icon{font-size:24px;margin-bottom:8px}
+.insight-card .title{font-size:14px;font-weight:600;margin-bottom:4px}
+.insight-card .desc{font-size:13px;color:var(--text2);line-height:1.6}
+.modal{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);display:none;align-items:center;justify-content:center;z-index:1000}
+.modal.show{display:flex}
+.modal-content{background:var(--card);border-radius:16px;padding:24px;width:90%;max-width:500px;border:1px solid rgba(0,245,255,0.2)}
+.modal-header{font-size:18px;color:var(--neon);margin-bottom:16px}
+.modal-body{margin-bottom:20px}
+.modal-footer{display:flex;gap:12px;justify-content:flex-end}
+input,select,textarea{width:100%;padding:12px;margin:8px 0;background:rgba(0,0,0,0.3);border:1px solid rgba(0,245,255,0.2);border-radius:8px;color:var(--text);outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--neon)}
+.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.stat-card{background:linear-gradient(135deg,rgba(0,245,255,0.1),rgba(255,0,255,0.1));padding:20px;border-radius:12px;text-align:center}
+.stat-value{font-size:32px;font-weight:bold;background:linear-gradient(90deg,var(--neon),var(--neon2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat-label{font-size:12px;color:var(--text2)}
 </style>
 </head>
 <body>
 <div class="header">
-<h1>🏠 小小管家</h1>
-<div id="assistantName">⚡ 小艾 <span style="opacity:0.7">点击修改</span></div>
+<h1>🏠 小小管家 v5.0</h1>
+<div style="font-size:13px;color:var(--text2);margin-top:4px;">科学习惯养成系统</div>
 </div>
 
 <div class="main">
 <div class="sidebar">
-<div class="sidebar-header"><h2>📋 功能菜单</h2></div>
 <div class="nav-menu">
-<div class="nav-item active" onclick="showPanel('dashboard')"><span class="icon">📊</span>仪表盘</div>
-<div class="nav-item" onclick="showPanel('reminders')"><span class="icon">⏰</span>智能提醒</div>
-<div class="nav-item" onclick="showPanel('habits')"><span class="icon">🎯</span>习惯追踪</div>
-<div class="nav-item" onclick="showPanel('knowledge')"><span class="icon">🧠</span>知识库</div>
-<div class="nav-item" onclick="showPanel('chat')"><span class="icon">💬</span>AI 对话</div>
-<div class="nav-item" onclick="showPanel('permissions')"><span class="icon">🔐</span>权限管理</div>
-<div class="nav-item" onclick="showPanel('settings')"><span class="icon">⚙️</span>设置</div>
+<div class="nav-item active" onclick="showPanel('dashboard')"><span>📊</span>今日概览</div>
+<div class="nav-item" onclick="showPanel('habits')"><span>🎯</span>习惯计划</div>
+<div class="nav-item" onclick="showPanel('insights')"><span>💡</span>智能洞察</div>
+<div class="nav-item" onclick="showPanel('reminders')"><span>⏰</span>提醒设置</div>
+<div class="nav-item" onclick="showPanel('settings')"><span>⚙️</span>设置</div>
 </div>
 </div>
 
 <div class="content">
 <!-- 仪表盘 -->
 <div id="dashboard" class="panel active">
-<div class="card"><h3>🌅 早上好！</h3><p id="greeting" style="color:var(--text2);margin-bottom:16px;"></p>
-<div class="quick-actions">
-<div class="action-btn" onclick="showPanel('reminders');openReminderModal()"><div class="icon">⏰</div><div class="label">新建提醒</div></div>
-<div class="action-btn" onclick="showPanel('habits');openHabitModal()"><div class="icon">🎯</div><div class="label">记录习惯</div></div>
-<div class="action-btn" onclick="showPanel('knowledge');openKnowledgeModal()"><div class="icon">📝</div><div class="label">速记灵感</div></div>
-<div class="action-btn" onclick="showPanel('chat')"><div class="icon">💬</div><div class="label">AI 聊天</div></div>
-</div></div>
+<div class="card">
+<h3>🌅 <span id="greetingText">早上好！</span></h3>
+<p id="greetingDesc" style="color:var(--text2);margin:8px 0 16px;"></p>
+<button onclick="openHabitModal()" class="btn btn-primary" style="width:100%;">+ 创建新习惯计划</button>
+</div>
 
-<div class="card"><h3>📊 今日概览</h3>
-<div class="stats-grid">
-<div class="stat-card"><div class="stat-value" id="todayReminders">0</div><div class="stat-label">今日提醒</div></div>
-<div class="stat-card"><div class="stat-value" id="todayHabits">0</div><div class="stat-label">习惯打卡</div></div>
-<div class="stat-card"><div class="stat-value" id="knowledgeCount">0</div><div class="stat-label">知识条目</div></div>
+<div class="card">
+<h3>📊 今日进度</h3>
+<div class="stats-grid" style="margin-top:12px;">
+<div class="stat-card"><div class="stat-value" id="todayCompleted">0</div><div class="stat-label">已完成</div></div>
+<div class="stat-card"><div class="stat-value" id="todayTotal">0</div><div class="stat-label">总计划</div></div>
 <div class="stat-card"><div class="stat-value" id="streakDays">0</div><div class="stat-label">连续天数</div></div>
-</div></div>
-
-<div class="card"><h3>⏰ 即将到来的提醒</h3><div id="upcomingReminders"></div></div>
+<div class="stat-card"><div class="stat-value" id="successRate">0%</div><div class="stat-label">成功率</div></div>
+</div>
 </div>
 
-<!-- 智能提醒 -->
-<div id="reminders" class="panel">
-<div class="card"><h3>⏰ 智能提醒</h3>
-<div style="display:flex;gap:8px;margin-bottom:16px;">
-<input type="text" id="reminderSearch" placeholder="搜索提醒..." style="flex:1;padding:10px;background:rgba(0,0,0,0.3);border:1px solid rgba(0,245,255,0.2);border-radius:8px;color:var(--text);outline:none;">
-<button onclick="openReminderModal()" class="btn btn-primary">+ 新建</button>
+<div class="card">
+<h3>⏰ 即将到来的提醒</h3>
+<div id="upcomingList" style="margin-top:12px;"></div>
 </div>
-<div id="reminderList"></div></div>
 </div>
 
-<!-- 习惯追踪 -->
+<!-- 习惯计划 -->
 <div id="habits" class="panel">
-<div class="card"><h3>🎯 习惯追踪</h3>
-<button onclick="openHabitModal()" class="btn btn-primary" style="margin-bottom:16px;">+ 新建习惯</button>
-<div id="habitList"></div></div>
+<div class="card">
+<h3>🎯 我的习惯养成计划</h3>
+<p style="color:var(--text2);font-size:13px;margin-bottom:16px;">科学安排，循序渐进，让好习惯自然养成</p>
+<div id="habitPlansList"></div>
+</div>
 </div>
 
-<!-- 知识库 -->
-<div id="knowledge" class="panel">
-<div class="card"><h3>🧠 知识库</h3>
-<div style="display:flex;gap:8px;margin-bottom:16px;">
-<input type="text" id="knowledgeSearch" placeholder="搜索知识..." style="flex:1;padding:10px;background:rgba(0,0,0,0.3);border:1px solid rgba(0,245,255,0.2);border-radius:8px;color:var(--text);outline:none;">
-<button onclick="openKnowledgeModal()" class="btn btn-primary">+ 速记</button>
+<!-- 智能洞察 -->
+<div id="insights" class="panel">
+<div class="card">
+<h3>💡 智能洞察</h3>
+<p style="color:var(--text2);font-size:13px;margin-bottom:16px;">基于你的行为模式，AI 为你提供的个性化建议</p>
+<div id="insightsList"></div>
 </div>
-<div id="knowledgeList"></div></div>
-</div>
-
-<!-- AI 对话 -->
-<div id="chat" class="panel">
-<div class="card"><h3>💬 AI 对话</h3>
-<div id="chatMessages" style="max-height:400px;overflow-y:auto;margin-bottom:16px;"></div>
-<div class="input-area" style="position:static;border:none;background:transparent;padding:0;">
-<input type="text" id="chatInput" placeholder="输入消息或点击麦克风..." onkeypress="if(event.key==='Enter')sendChat()">
-<button id="voiceBtn" class="voice-btn" onclick="toggleVoice()" style="width:44px;height:44px;padding:0;">🎤</button>
-<button onclick="sendChat()" class="btn btn-primary">发送</button>
-</div></div>
 </div>
 
-<!-- 权限管理 -->
-<div id="permissions" class="panel">
-<div class="card"><h3>🔐 权限管理</h3>
-<p style="color:var(--text2);font-size:13px;margin-bottom:16px;">所有权限需您授权才能使用</p>
-<div id="permissionList"></div></div>
+<!-- 提醒设置 -->
+<div id="reminders" class="panel">
+<div class="card">
+<h3>⏰ 提醒偏好</h3>
+<p style="color:var(--text2);font-size:13px;margin-bottom:16px;">自定义提醒方式和时间</p>
+<label style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+<input type="checkbox" id="gentleReminder" checked style="width:auto;">温柔提醒模式
+</label>
+<label style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+<input type="checkbox" id="smartAdjust" checked style="width:auto;">智能时间调整
+</label>
+<label style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+<input type="checkbox" id="encourageMsg" checked style="width:auto;">鼓励消息
+</label>
+</div>
 </div>
 
 <!-- 设置 -->
 <div id="settings" class="panel">
-<div class="card"><h3>🎨 个性化</h3>
-<p>助手名字</p><input type="text" id="nameInput" value="小艾" onchange="updateName()" style="width:100%;padding:12px;background:rgba(0,0,0,0.3);border:1px solid rgba(0,245,255,0.2);border-radius:8px;color:var(--text);margin:8px 0;">
-<p>提醒音</p><select id="soundSelect" style="width:100%;padding:12px;background:rgba(0,0,0,0.3);border:1px solid rgba(0,245,255,0.2);border-radius:8px;color:var(--text);margin:8px 0;"><option value="gentle">轻柔</option><option value="standard" selected>标准</option><option value="energetic">活力</option></select></div>
-<div class="card"><h3>📊 统计</h3><div class="stats-grid"><div class="stat-card"><div class="stat-value" id="totalInteractions">0</div><div class="stat-label">总交互</div></div><div class="stat-card"><div class="stat-value" id="totalHabits">0</div><div class="stat-label">总习惯</div></div></div></div>
-<div class="card"><h3>🗑️ 数据</h3><button onclick="clearAll()" class="btn" style="background:var(--danger);color:white;">清除所有数据</button></div>
+<div class="card">
+<h3>⚙️ 设置</h3>
+<label>你的名字</label>
+<input type="text" id="userName" placeholder="输入你的名字" onchange="updateSettings()">
+<label>作息类型</label>
+<select id="sleepType" onchange="updateSettings()">
+<option value="early">早起型 (6 点起床)</option>
+<option value="normal" selected>正常型 (8 点起床)</option>
+<option value="late">晚睡型 (10 点起床)</option>
+</select>
+</div>
+<div class="card">
+<h3>📊 统计</h3>
+<div class="stats-grid">
+<div class="stat-card"><div class="stat-value" id="totalHabits">0</div><div class="stat-label">总习惯</div></div>
+<div class="stat-card"><div class="stat-value" id="totalDays">0</div><div class="stat-label">总天数</div></div>
 </div>
 </div>
 </div>
-
-<!-- 底部导航 (移动端) -->
-<div class="bottom-nav">
-<div class="bottom-nav-item active" onclick="showPanel('dashboard')"><span class="icon">📊</span>首页</div>
-<div class="bottom-nav-item" onclick="showPanel('reminders')"><span class="icon">⏰</span>提醒</div>
-<div class="bottom-nav-item" onclick="showPanel('habits')"><span class="icon">🎯</span>习惯</div>
-<div class="bottom-nav-item" onclick="showPanel('chat')"><span class="icon">💬</span>对话</div>
-<div class="bottom-nav-item" onclick="showPanel('settings')"><span class="icon">⚙️</span>设置</div>
-</div>
-
-<!-- 新建提醒弹窗 -->
-<div id="reminderModal" class="modal">
-<div class="modal-content">
-<div class="modal-header">⏰ 新建提醒</div>
-<div class="modal-body">
-<input type="text" id="reminderTitle" placeholder="提醒内容" style="width:100%;padding:12px;margin-bottom:12px;background:rgba(0,0,0,0.3);border:1px solid rgba(0,245,255,0.2);border-radius:8px;color:var(--text);">
-<input type="time" id="reminderTime" style="width:100%;padding:12px;margin-bottom:12px;background:rgba(0,0,0,0.3);border:1px solid rgba(0,245,255,0.2);border-radius:8px;color:var(--text);">
-<select id="reminderRepeat" style="width:100%;padding:12px;margin-bottom:12px;background:rgba(0,0,0,0.3);border:1px solid rgba(0,245,255,0.2);border-radius:8px;color:var(--text);"><option value="once">仅一次</option><option value="daily">每天</option><option value="weekly">每周</option></select>
-<select id="reminderType" style="width:100%;padding:12px;margin-bottom:12px;background:rgba(0,0,0,0.3);border:1px solid rgba(0,245,255,0.2);border-radius:8px;color:var(--text);"><option value="general">常规</option><option value="meal">用餐</option><option value="health">健康</option><option value="work">工作</option></select>
-</div>
-<div class="modal-footer"><button onclick="closeModal('reminderModal')" class="btn btn-secondary">取消</button><button onclick="addReminder()" class="btn btn-primary">创建</button></div>
 </div>
 </div>
 
-<!-- 新建习惯弹窗 -->
+<!-- 创建习惯弹窗 -->
 <div id="habitModal" class="modal">
 <div class="modal-content">
-<div class="modal-header">🎯 新建习惯</div>
+<div class="modal-header">🎯 创建习惯养成计划</div>
 <div class="modal-body">
-<input type="text" id="habitName" placeholder="习惯名称 (如：每天吃早餐)" style="width:100%;padding:12px;margin-bottom:12px;background:rgba(0,0,0,0.3);border:1px solid rgba(0,245,255,0.2);border-radius:8px;color:var(--text);">
-<select id="habitFrequency" style="width:100%;padding:12px;margin-bottom:12px;background:rgba(0,0,0,0.3);border:1px solid rgba(0,245,255,0.2);border-radius:8px;color:var(--text);"><option value="daily">每天</option><option value="weekly">每周</option><option value="monthly">每月</option></select>
-</div>
-<div class="modal-footer"><button onclick="closeModal('habitModal')" class="btn btn-secondary">取消</button><button onclick="addHabit()" class="btn btn-primary">创建</button></div>
-</div>
-</div>
+<label>我想养成的习惯</label>
+<input type="text" id="habitGoal" placeholder="例如：每天运动、早睡早起、多喝水...">
 
-<!-- 速记弹窗 -->
-<div id="knowledgeModal" class="modal">
-<div class="modal-content">
-<div class="modal-header">📝 灵感速记</div>
-<div class="modal-body">
-<textarea id="knowledgeContent" placeholder="记录你的想法、灵感、笔记..." rows="5" style="width:100%;padding:12px;background:rgba(0,0,0,0.3);border:1px solid rgba(0,245,255,0.2);border-radius:8px;color:var(--text);resize:none;"></textarea>
-<input type="text" id="knowledgeTags" placeholder="标签 (用逗号分隔)" style="width:100%;padding:12px;margin-top:12px;background:rgba(0,0,0,0.3);border:1px solid rgba(0,245,255,0.2);border-radius:8px;color:var(--text);">
+<label>为什么想养成这个习惯？</label>
+<input type="text" id="habitWhy" placeholder="例如：为了健康、提高效率、改善睡眠...">
+
+<label>当前难度评估</label>
+<select id="habitDifficulty">
+<option value="easy">简单 - 几乎不需要意志力</option>
+<option value="medium" selected>中等 - 需要一些努力</option>
+<option value="hard">困难 - 需要很大毅力</option>
+</select>
+
+<label>可用时间段</label>
+<select id="availableTime">
+<option value="morning">早晨 (6:00-9:00)</option>
+<option value="noon">中午 (12:00-14:00)</option>
+<option value="afternoon">下午 (15:00-18:00)</option>
+<option value="evening">晚上 (19:00-22:00)</option>
+<option value="flexible">时间灵活</option>
+</select>
+
+<div style="background:rgba(0,245,255,0.1);padding:12px;border-radius:8px;margin-top:16px;">
+<strong style="color:var(--neon);">🧠 AI 科学建议：</strong>
+<p id="aiSuggestion" style="font-size:13px;color:var(--text2);margin-top:8px;line-height:1.6;">根据你的选择，AI 会生成最适合你的习惯养成方案</p>
 </div>
-<div class="modal-footer"><button onclick="closeModal('knowledgeModal')" class="btn btn-secondary">取消</button><button onclick="addKnowledge()" class="btn btn-primary">保存</button></div>
+</div>
+<div class="modal-footer">
+<button onclick="closeModal('habitModal')" class="btn btn-secondary">取消</button>
+<button onclick="createHabitPlan()" class="btn btn-primary">创建计划</button>
+</div>
 </div>
 </div>
 
 <script>
-// ============ 小小管家核心 ============
+// ============ 科学习惯养成系统 ============
 const Butler={
-name:'小艾',reminders:[],habits:[],knowledge:[],permissions:{},interactions:0,
-greetings:['早上好！今天也要加油哦！☀️','下午好！喝杯水休息一下吧~ 💧','晚上好！今天过得怎么样？🌙'],
-chatReplies:{
-greeting:['你好呀！我是小小管家，你的生活协作者！🏠','嗨！有什么可以帮你的吗？😊'],
-self:['我是小小管家，由 Claw 创造！帮你管理提醒、习惯和知识！🤖','我是你的 AI 生活协作者，让日子过得更有序！✨'],
-help:['我可以帮你：设置提醒、追踪习惯、管理知识、聊天解闷！📋','提醒、习惯、知识库，我都能帮你打理！💪'],
-default:['明白了！还有什么需要我帮忙的吗？😊','好的！随时为你效劳！💕','收到！有其他事尽管说！🌟']
-}},
+user:{name:'',sleepType:'normal'},
+habits:[],
+insights:[],
+settings:{gentle:true,smartAdjust:true,encourage:true},
 
-// 提醒管理
-addReminder(){const t=document.getElementById('reminderTitle').value.trim();const time=document.getElementById('reminderTime').value;if(!t||!time){alert('请填写内容和时间');return;}
-Butler.reminders.push({id:Date.now(),title:t,time,time,repeat:document.getElementById('reminderRepeat').value,type:document.getElementById('reminderType').value,completed:false,created:new Date().toISOString()});
-closeModal('reminderModal');renderReminders();updateDashboard();alert('提醒已创建！到时会温柔提醒你~ ⏰');},
+// 习惯模板库
+habitTemplates:{
+'运动':[
+{day:1,action:'散步 5 分钟',time:'afternoon'},
+{day:2,action:'散步 10 分钟',time:'afternoon'},
+{day:3,action:'快走 10 分钟',time:'afternoon'},
+{day:4,action:'快走 15 分钟',time:'afternoon'},
+{day:5,action:'慢跑 10 分钟',time:'morning'},
+{day:6,action:'慢跑 15 分钟',time:'morning'},
+{day:7,action:'休息或轻度活动',time:'flexible'}
+],
+'喝水':[
+{day:1,action:'起床后喝一杯水',time:'morning'},
+{day:2,action:'上午喝一杯水',time:'morning'},
+{day:3,action:'下午喝一杯水',time:'afternoon'},
+{day:4,action:'早中晚各一杯',time:'flexible'},
+{day:5,action:'每小时提醒喝水',time:'flexible'},
+{day:6,action:'每天 8 杯水',time:'flexible'},
+{day:7,action:'保持每天 8 杯',time:'flexible'}
+],
+'早睡':[
+{day:1,action:'比平时早睡 15 分钟',time:'evening'},
+{day:2,action:'睡前 1 小时不用手机',time:'evening'},
+{day:3,action:'睡前阅读 10 分钟',time:'evening'},
+{day:4,action:'固定时间上床',time:'evening'},
+{day:5,action:'睡前冥想 5 分钟',time:'evening'},
+{day:6,action:'保持固定作息',time:'evening'},
+{day:7,action:'回顾一周睡眠',time:'evening'}
+],
+'阅读':[
+{day:1,action:'阅读 5 分钟',time:'evening'},
+{day:2,action:'阅读 10 分钟',time:'evening'},
+{day:3,action:'阅读 15 分钟',time:'evening'},
+{day:4,action:'阅读 20 分钟',time:'evening'},
+{day:5,action:'阅读 30 分钟',time:'evening'},
+{day:6,action:'做读书笔记',time:'evening'},
+{day:7,action:'分享读书心得',time:'evening'}
+]
+},
 
-renderReminders(){const l=document.getElementById('reminderList');if(Butler.reminders.length===0){l.innerHTML='<p style="color:var(--text2);text-align:center;padding:40px;">暂无提醒</p>';return;}
-l.innerHTML=Butler.reminders.map(r=>'<div class="reminder-item'+(r.completed?' completed':'')+'"><div class="info"><div class="title">'+r.title+'</div><div class="time">⏰ '+r.time+' · '+(r.repeat==='daily'?'每天':r.repeat==='weekly'?'每周':'一次')+'</div></div><div class="actions"><button class="btn-sm complete" onclick="toggleReminder('+r.id+')">'+(r.completed?'✓':'完成')+'</button><button class="btn-sm delete" onclick="deleteReminder('+r.id+')">删除</button></div></div>').join('');},
+// 创建习惯计划
+createHabitPlan(goal,why,difficulty,time){
+const template=this.matchTemplate(goal);
+const plan={
+id:Date.now(),
+goal,
+why,
+difficulty,
+preferredTime:time,
+startDate:new Date().toISOString().split('T')[0],
+week:template||this.generatePlan(goal,difficulty),
+currentDay:1,
+completedDays:[],
+missedDays:[],
+status:'active'
+};
+this.habits.push(plan);
+this.generateInsights();
+return plan;
+},
 
-toggleReminder(id){Butler.reminders.find(r=>r.id===id).completed=!Butler.reminders.find(r=>r.id===id).completed;renderReminders();},
-deleteReminder(id){Butler.reminders=Butler.reminders.filter(r=>r.id!==id);renderReminders();updateDashboard();},
+// 匹配已有模板
+matchTemplate(goal){
+const keywords={
+'运动':['运动','跑步','健身','锻炼','散步'],
+'喝水':['喝水','饮水','补水'],
+'早睡':['早睡','睡眠','作息','熬夜'],
+'阅读':['阅读','读书','看书','学习']
+};
+for(const[key,words]of Object.entries(keywords)){
+if(words.some(w=>goal.includes(w)))return this.habitTemplates[key];
+}
+return null;
+},
 
-// 习惯管理
-addHabit(){const n=document.getElementById('habitName').value.trim();if(!n){alert('请填写习惯名称');return;}
-Butler.habits.push({id:Date.now(),name:n,freq:document.getElementById('habitFrequency').value,streak:0,checked:false,created:new Date().toISOString()});
-closeModal('habitModal');renderHabits();updateDashboard();alert('习惯已创建！坚持下去哦！💪');},
+// 生成自定义计划
+generatePlan(goal,difficulty){
+const mult=difficulty==='hard'?0.5:difficulty==='medium'?1:1.5;
+const week=[];
+for(let i=1;i<=7;i++){
+week.push({
+day:i,
+action:`第${i}天：循序渐进`,
+time:'flexible'
+});
+}
+return week;
+},
 
-renderHabits(){const l=document.getElementById('habitList');if(Butler.habits.length===0){l.innerHTML='<p style="color:var(--text2);text-align:center;padding:40px;">暂无习惯</p>';return;}
-l.innerHTML=Butler.habits.map(h=>'<div class="habit-item"><div class="checkbox'+(h.checked?' checked':'')+'" onclick="toggleHabit('+h.id+')"></div><div class="info"><div class="name">'+h.name+'</div><div class="streak">🔥 连续'+h.streak+'天</div></div><button class="btn-sm delete" onclick="deleteHabit('+h.id+')">删除</button></div>').join('');},
+// 生成智能洞察
+generateInsights(){
+this.insights=[];
+const completed=this.habits.reduce((sum,h)=>sum+h.completedDays.length,0);
+const total=this.habits.reduce((sum,h)=>sum+h.currentDay,0);
+const rate=total>0?Math.round(completed/total*100):0;
 
-toggleHabit(id){const h=Butler.habits.find(h=>h.id===id);h.checked=!h.checked;if(h.checked)h.streak++;else h.streak=Math.max(0,h.streak-1);renderHabits();updateDashboard();},
-deleteHabit(id){Butler.habits=Butler.habits.filter(h=>h.id!==id);renderHabits();updateDashboard();},
+if(rate>=80){
+this.insights.push({
+icon:'🎉',
+title:'太棒了！执行力超强',
+desc:`你的完成率是${rate}%，继续保持！建议可以适当增加挑战性。`
+});
+}else if(rate>=50){
+this.insights.push({
+icon:'💪',
+title:'不错的进展',
+desc:`完成率${rate}%，已经很好了！可以尝试把困难任务拆解得更小。`
+});
+}else{
+this.insights.push({
+icon:'🌱',
+title:'慢慢来，比较快',
+desc:`刚开始可能会有些困难，这很正常。建议从最小的行动开始，建立信心。`
+});
+}
 
-// 知识管理
-addKnowledge(){const c=document.getElementById('knowledgeContent').value.trim();if(!c){alert('请填写内容');return;}
-const tags=document.getElementById('knowledgeTags').value.split(',').map(t=>t.trim()).filter(t=>t);
-Butler.knowledge.push({id:Date.now(),content:c,tags,created:new Date().toISOString()});
-closeModal('knowledgeModal');renderKnowledge();updateDashboard();alert('已存入知识库！🧠');},
+// 时间洞察
+const morningHabits=this.habits.filter(h=>h.preferredTime==='morning').length;
+if(morningHabits>2){
+this.insights.push({
+icon:'🌅',
+title:'晨型人',
+desc:'你偏好早晨完成任务，这是最高效的时间段！继续保持晨间习惯。'
+});
+}
+},
 
-renderKnowledge(){const l=document.getElementById('knowledgeList');if(Butler.knowledge.length===0){l.innerHTML='<p style="color:var(--text2);text-align:center;padding:40px;">暂无知识</p>';return;}
-l.innerHTML=Butler.knowledge.map(k=>'<div class="knowledge-card"><div class="title">'+k.content+'</div><div class="tags">'+(k.tags.map(t=>'<span class="tag">#'+t+'</span>').join('')||'<span class="tag">未分类</span>')+'</div></div>').join('');},
+// 更新习惯状态
+updateHabit(id,completed){
+const habit=this.habits.find(h=>h.id===id);
+if(!habit)return;
+if(completed){
+habit.completedDays.push(habit.currentDay);
+habit.currentDay=Math.min(habit.currentDay+1,7);
+}else{
+habit.missedDays.push(habit.currentDay);
+}
+this.generateInsights();
+}
+},
 
-// AI 对话
-chat(input){Butler.interactions++;const l=input.toLowerCase();
-if(l.includes('你好')||l.includes('早'))return r(Butler.chatReplies.greeting);
-if(l.includes('名字')||l.includes('是谁'))return r(['我是'+Butler.name+'！你的 AI 生活协作者！🏠','我是小小管家，由 Claw 创造！🤖']);
-if(l.includes('功能')||l.includes('能做什么'))return r(Butler.chatReplies.help);
-if(l.includes('提醒'))return r(['我可以帮你设置定时提醒，到时会温柔提醒你！⏰','提醒功能是我的强项！不会再让你忘记重要事情！']);
-if(l.includes('习惯'))return r(['习惯追踪帮你坚持好习惯！每天打卡超有成就感！🎯','我可以监督你的习惯，让你变得更好！💪']);
-return r(Butler.chatReplies.default);},
+// UI 函数
+function showPanel(id){
+document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+event.currentTarget.classList.add('active');
+}
 
-// 权限
-permissions:[{id:'notification',name:'🔔 通知',desc:'发送提醒通知'},{id:'location',name:'📍 位置',desc:'地理位置触发提醒'},{id:'calendar',name:'📅 日历',desc:'同步日程安排'},{id:'health',name:'❤️ 健康',desc:'健康数据整合'},{id:'contacts',name:'📱 联系人',desc:'好友监督提醒'},{id:'microphone',name:'🎤 麦克风',desc:'语音输入'}],
-
-// 更新
-updateGreeting(){const h=new Date().getHours();const g=h<12?'早上好！':h<18?'下午好！':'晚上好！';document.getElementById('greeting').textContent=g+' 我是'+Butler.name+'，你的生活协作者！今天有什么需要我帮忙的吗？🌟';},
-
-updateDashboard(){document.getElementById('todayReminders').textContent=Butler.reminders.filter(r=>!r.completed).length;
-document.getElementById('todayHabits').textContent=Butler.habits.filter(h=>h.checked).length;
-document.getElementById('knowledgeCount').textContent=Butler.knowledge.length;
-document.getElementById('streakDays').textContent=Math.max(...Butler.habits.map(h=>h.streak),0);
-document.getElementById('totalInteractions').textContent=Butler.interactions;
-document.getElementById('totalHabits').textContent=Butler.habits.length;
-const upcoming=Butler.reminders.filter(r=>!r.completed).slice(0,3);
-document.getElementById('upcomingReminders').innerHTML=upcoming.length?upcoming.map(r=>'<div class="reminder-item"><div class="info"><div class="title">'+r.title+'</div><div class="time">⏰ '+r.time+'</div></div></div>').join(''):'<p style="color:var(--text2);text-align:center;">暂无提醒</p>';}},
-
-// 工具函数
-function r(arr){return arr[Math.floor(Math.random()*arr.length)]}
-function showPanel(id){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');
-document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));document.querySelectorAll('.nav-item')[['dashboard','reminders','habits','knowledge','chat','permissions','settings'].indexOf(id)].classList.add('active');
-document.querySelectorAll('.bottom-nav-item').forEach(n=>n.classList.remove('active'));document.querySelectorAll('.bottom-nav-item')[['dashboard','reminders','habits','chat','settings'].indexOf(id)].classList.add('active');}
-function openReminderModal(){document.getElementById('reminderModal').classList.add('show');}
 function openHabitModal(){document.getElementById('habitModal').classList.add('show');}
-function openKnowledgeModal(){document.getElementById('knowledgeModal').classList.add('show');}
 function closeModal(id){document.getElementById(id).classList.remove('show');}
-function updateName(){Butler.name=document.getElementById('nameInput').value;document.getElementById('assistantName').innerHTML='⚡ '+Butler.name+' <span style="opacity:0.7">点击修改</span>';}
-function editName(){const n=prompt('给管家起个名字:',Butler.name);if(n){Butler.name=n;document.getElementById('nameInput').value=n;updateName();}}
 
-// 语音
-let recognition=null,isListening=false;
-function initVoice(){if(window.SpeechRecognition||window.webkitSpeechRecognition){recognition=new(window.SpeechRecognition||window.webkitSpeechRecognition)();recognition.lang='zh-CN';
-recognition.onresult=e=>{document.getElementById('chatInput').value=e.results[0][0].transcript;sendChat();};
-recognition.onend=()=>{isListening=false;updateVoiceBtn();};}}
-function toggleVoice(){if(!recognition){alert('浏览器不支持语音输入');return;}if(isListening)recognition.stop();else{recognition.start();isListening=true;updateVoiceBtn();}}
-function updateVoiceBtn(){const btn=document.getElementById('voiceBtn');btn.innerHTML=isListening?'🔴':'🎤';btn.classList.toggle('listening',isListening);}
+function createHabitPlan(){
+const goal=document.getElementById('habitGoal').value.trim();
+const why=document.getElementById('habitWhy').value.trim();
+const diff=document.getElementById('habitDifficulty').value;
+const time=document.getElementById('availableTime').value;
 
-// 聊天
-function sendChat(){const input=document.getElementById('chatInput');const text=input.value.trim();if(!text)return;
-const msgs=document.getElementById('chatMessages');msgs.innerHTML+='<div style="margin-bottom:12px;"><span style="color:var(--text2);">👤 </span>'+text+'</div>';
-input.value='';setTimeout(()=>{const reply=Butler.chat(text);msgs.innerHTML+='<div style="margin-bottom:12px;"><span style="color:var(--neon);">🤖 </span>'+reply+'</div>';msgs.scrollTop=msgs.scrollHeight;Butler.updateDashboard();},600);}
+if(!goal){alert('请填写想养成的习惯');return;}
 
-// 权限
-function renderPermissions(){document.getElementById('permissionList').innerHTML=Butler.permissions.map(p=>'<div class="permission-item'+(p.granted?' granted':'')+'"><div><div style="font-size:14px;margin-bottom:4px;">'+p.name+'</div><div style="font-size:12px;color:var(--text2);">'+p.desc+'</div></div><div class="toggle"><input type="checkbox"'+(p.granted?' checked':'')+' onchange="togglePermission(\''+p.id+'\')"><label class="toggle-slider"></label></div></div>').join('');}
-function togglePermission(id){const p=Butler.permissions.find(p=>p.id===id);p.granted=!p.granted;renderPermissions();}
+Butler.createHabitPlan(goal,why,diff,time);
+closeModal('habitModal');
+renderHabitPlans();
+renderInsights();
+updateStats();
+alert('✅ 习惯计划已创建！我会科学地帮你安排，循序渐进地养成好习惯！');
+}
+
+function renderHabitPlans(){
+const container=document.getElementById('habitPlansList');
+if(Butler.habits.length===0){
+container.innerHTML='<p style="color:var(--text2);text-align:center;padding:40px;">还没有习惯计划，点击上方按钮创建第一个吧！</p>';
+return;
+}
+container.innerHTML=Butler.habits.map(h=>{
+const progress=(h.completedDays.length/h.week.length*100).toFixed(0);
+return `<div class="habit-plan ${h.completedDays.length>=h.week.length?'completed':''}">
+<h4>🎯 ${h.goal}</h4>
+<p class="desc">💡 目的：${h.why||'改善生活'}</p>
+<p class="desc">📅 开始于：${h.startDate} | 难度：${h.difficulty==='easy'?'简单':h.difficulty==='medium'?'中等':'困难'}</p>
+<div class="schedule">
+${h.week.slice(0,3).map(d=>`<span class="time-badge">${d.action}</span>`).join('')}
+${h.week.length>3?'<span class="time-badge">...等'+h.week.length+'天计划</span>':''}
+</div>
+<div class="progress"><div class="progress-bar" style="width:${progress}%"></div></div>
+<p style="font-size:12px;color:var(--text2);margin-bottom:12px;">进度：${h.completedDays.length}/${h.week.length}天 (${progress}%)</p>
+<div class="actions">
+<button class="btn btn-secondary" onclick="skipDay(${h.id})">跳过今天</button>
+<button class="btn btn-primary" onclick="completeDay(${h.id})">✅ 完成今天</button>
+</div>
+</div>`;
+}).join('');
+}
+
+function completeDay(id){
+Butler.updateHabit(id,true);
+renderHabitPlans();
+updateStats();
+const habit=Butler.habits.find(h=>h.id===id);
+const msgs=['🎉 太棒了！又完成了一天！','💪 坚持就是胜利！','🌟 你正在变得更好！','✨ 好习惯就是这样养成的！'];
+alert(msgs[Math.floor(Math.random()*msgs.length)]);
+}
+
+function skipDay(id){
+Butler.updateHabit(id,false);
+renderHabitPlans();
+updateStats();
+alert('没关系，明天继续！💕');
+}
+
+function renderInsights(){
+const container=document.getElementById('insightsList');
+if(Butler.insights.length===0){
+container.innerHTML='<p style="color:var(--text2);text-align:center;">完成一些习惯后，AI 会为你提供个性化洞察</p>';
+return;
+}
+container.innerHTML=Butler.insights.map(i=>`
+<div class="insight-card">
+<div class="icon">${i.icon}</div>
+<div class="title">${i.title}</div>
+<div class="desc">${i.desc}</div>
+</div>
+`).join('');
+}
+
+function updateStats(){
+const today=new Date().getDay();
+const completed=Butler.habits.reduce((sum,h)=>sum+(h.completedDays.includes(h.currentDay)?1:0),0);
+const total=Butler.habits.length;
+const streak=Math.max(...Butler.habits.map(h=>h.completedDays.length),0);
+const rate=total>0?Math.round(completed/total*100):0;
+
+document.getElementById('todayCompleted').textContent=completed;
+document.getElementById('todayTotal').textContent=total;
+document.getElementById('streakDays').textContent=streak;
+document.getElementById('successRate').textContent=rate+'%';
+document.getElementById('totalHabits').textContent=Butler.habits.length;
+document.getElementById('totalDays').textContent=Butler.habits.reduce((sum,h)=>sum+h.completedDays.length,0);
+
+// 问候语
+const hour=new Date().getHours();
+const greet=hour<12?'早上好':'下午好';
+document.getElementById('greetingText').textContent=greet+'，'+(Butler.user.name||'亲爱的');
+document.getElementById('greetingDesc').textContent=`今天有${total}个习惯计划，已完成${completed}个。${rate>=80?'继续保持，你太棒了！':rate>=50?'加油，你做得很好！':'慢慢来，我在陪着你！'}`;
+}
+
+function updateSettings(){
+Butler.user.name=document.getElementById('userName').value;
+Butler.user.sleepType=document.getElementById('sleepType').value;
+updateStats();
+}
 
 // 初始化
-function init(){Butler.updateGreeting();Butler.updateDashboard();renderReminders();renderHabits();renderKnowledge();renderPermissions();initVoice();
-document.getElementById('assistantName').onclick=editName;
+function init(){
 // 示例数据
-if(Butler.reminders.length===0){Butler.reminders.push({id:1,title:'💊 吃午饭',time:'12:00',repeat:'daily',type:'meal',completed:false,created:new Date().toISOString()});
-Butler.reminders.push({id:2,title:'💧 喝水提醒',time:'15:00',repeat:'daily',type:'health',completed:false,created:new Date().toISOString()});}
-if(Butler.habits.length===0){Butler.habits.push({id:1,name:'每天吃早餐',freq:'daily',streak:5,checked:false,created:new Date().toISOString()});
-Butler.habits.push({id:2,name:'运动 30 分钟',freq:'daily',streak:3,checked:false,created:new Date().toISOString()});}}
+if(Butler.habits.length===0){
+Butler.createHabitPlan('每天运动','为了身体健康','medium','morning');
+Butler.createHabitPlan('多喝水','改善皮肤和代谢','easy','flexible');
+}
+renderHabitPlans();
+renderInsights();
+updateStats();
+}
 
 init();
 </script>
